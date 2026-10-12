@@ -93,6 +93,33 @@ service cloud.firestore {
       allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
     }
 
+    // --- users (perfil y rol) --------------------------------------------
+
+    function userProfileIsValid(uid) {
+      return request.resource.data.keys().hasOnly(['email', 'role', 'ownerId',
+                                                  'companyId', 'createdAt',
+                                                  'updatedAt'])
+             && request.resource.data.email is string
+             // El auto-registro solo puede crear dueños. El personal se da de
+             // alta por invitación en Fase 2 (docs/08-admin/sistema-admin.md).
+             && request.resource.data.role == 'dueno'
+             && (request.resource.data.ownerId == null
+                 || request.resource.data.ownerId is string)
+             && (request.resource.data.companyId == null
+                 || request.resource.data.companyId is string)
+             && isOptionalTimestamp(request.resource.data.createdAt);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && userProfileIsValid(uid);
+      // El rol no se puede cambiar desde el cliente.
+      allow update: if isOwner(uid)
+                    && request.resource.data.role == resource.data.role
+                    && request.resource.data.email == resource.data.email;
+      allow delete: if false;
+    }
+
     // --- visits -----------------------------------------------------------
     // El dueño solo ve las visitas de sus mascotas. El personal de clínica
     // entra con companies/staff en Fase 4.

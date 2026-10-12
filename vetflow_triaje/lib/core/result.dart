@@ -33,3 +33,16 @@ class Failure<T> extends Result<T> {
 
   final DomainError error;
 }
+
+/// Accesos rápidos sin exigir manejar las dos ramas con [Result.when].
+extension ResultX<T> on Result<T> {
+  T? get valueOrNull => switch (this) {
+        Ok<T>(:final value) => value,
+        Failure<T>() => null,
+      };
+
+  DomainError? get errorOrNull => switch (this) {
+        Ok<T>() => null,
+        Failure<T>(:final error) => error,
+      };
+}

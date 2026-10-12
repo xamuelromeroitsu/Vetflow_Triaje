@@ -14,6 +14,10 @@
 | Recepción / veterinario | `visits` de su clínica |
 | Administrador | Lo anterior + `staff` de su clínica |
 
+El rol del usuario se guarda en `users/{uid}` (campo `role`) y lo leen las
+reglas; el cliente no puede cambiarse el rol. El auto-registro solo crea
+`dueno`; el personal se da de alta por invitación en Fase 2.
+
 ## Medidas
 - Autenticación obligatoria para escribir.
 - Validación de tipos y rangos en reglas de Firestore.

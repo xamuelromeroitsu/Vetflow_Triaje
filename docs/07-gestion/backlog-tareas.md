@@ -17,5 +17,7 @@ Estados: `Por hacer` · `En curso` · `En revisión` · `Hecho` · `Bloqueado`
 | TAR-11 | US-03, US-04 | Pruebas de campos obligatorios y errores de conexión | QA | Por hacer |
 | TAR-12 | US-03, US-04 | Pruebas offline y reintentos | QA | Por hacer |
 | TAR-13 | US-05 | Pantalla de preguntas de descarte | Mobile | Por hacer |
-| TAR-14 | US-05, US-06 | Motor de triaje (reglas versionadas) + pruebas unitarias | Mobile | Por hacer |
+| TAR-14 | US-05, US-06 | Motor de triaje (reglas versionadas) + pruebas unitarias | Mobile | En revisión |
 | TAR-15 | US-07 | Cola de casos ordenada por prioridad | Mobile / Backend | Por hacer |
+| TAR-16 | — | Auth email/contraseña + rol (código y tests) | Mobile + Backend | En revisión |
+| TAR-17 | — | Verificar registro/login/logout en dispositivo | QA | Bloqueado (falta `flutterfire configure` + proveedor email en consola) |
