@@ -1,0 +1,157 @@
+rules_version = '2';
+
+// Reglas iniciales de Firestore para owners, pets y visits (TAR-03).
+// BORRADOR pendiente de revisión. La validación del móvil debe espejarlas y
+// viceversa:
+//   - lib/features/owners/domain/owner_validation.dart
+//   - lib/features/pets/domain/pet_validation.dart
+//
+// Roles (docs/05-arquitectura/seguridad-y-privacidad.md):
+//   - Dueño: solo sus owners, pets y visits.
+//   - Recepción / veterinario: visits de su clínica (companies/staff, Fase 4).
+//   - Administrador: lo anterior + staff de su clínica.
+//
+// Pendiente: identificar al dueño por teléfono o cédula
+// (docs/07-gestion/preguntas-pendientes.md, pregunta 4).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    function isNonEmptyString(value) {
+      return value is string && value.size() > 0 && value.size() <= 120;
+    }
+
+    function isOptionalText(value) {
+      return value == null || (value is string && value.size() <= 500);
+    }
+
+    // --- owners -----------------------------------------------------------
+
+    function ownerIsValid(data) {
+      return data.keys().hasOnly(
+               ['name', 'phone', 'email', 'createdAt', 'updatedAt']
+             )
+             && isNonEmptyString(data.name)
+             && isOptionalText(data.phone)
+             && isOptionalText(data.email)
+             && isOptionalTimestamp(data.createdAt);
+    }
+
+    function isOptionalTimestamp(value) {
+      return value == null || value is timestamp;
+    }
+
+    match /owners/{ownerId} {
+      allow read: if isOwner(ownerId);
+      allow create: if isOwner(ownerId) && ownerIsValid(request.resource.data);
+      allow update: if isOwner(ownerId)
+                    && ownerIsValid(request.resource.data)
+                    && request.resource.data.name == resource.data.name;
+      // El borrado lo solicita el dueño; proceso por definir.
+      allow delete: if false;
+    }
+
+    // --- pets -------------------------------------------------------------
+
+    function petIsValid(data) {
+      return data.keys().hasOnly(
+               ['ownerId', 'name', 'species', 'breed', 'ageMonths',
+                'sex', 'neutered', 'history', 'allergies',
+                'createdAt', 'updatedAt']
+             )
+             && data.ownerId == request.auth.uid
+             && isNonEmptyString(data.name)
+             && data.species in ['perro', 'gato']
+             && isNonEmptyString(data.breed)
+             && data.ageMonths is int
+             && data.ageMonths >= 0
+             && isOptionalText(data.sex)
+             && (data.neutered == null || data.neutered is bool)
+             && isOptionalText(data.history)
+             && isOptionalText(data.allergies)
+             && isOptionalTimestamp(data.createdAt);
+    }
+
+    match /pets/{petId} {
+      allow read: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      allow create: if petIsValid(request.resource.data);
+
+      allow update: if isSignedIn()
+                    && resource.data.ownerId == request.auth.uid
+                    && petIsValid(request.resource.data)
+                    && request.resource.data.ownerId == resource.data.ownerId;
+
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // --- visits -----------------------------------------------------------
+    // El dueño solo ve las visitas de sus mascotas. El personal de clínica
+    // entra con companies/staff en Fase 4.
+
+    function petOf(petId) {
+      return get(/databases/$(database)/documents/pets/$(petId)).data;
+    }
+
+    function isPetOwner(petId) {
+      return isSignedIn() && petOf(petId).ownerId == request.auth.uid;
+    }
+
+    function visitIsValid(data) {
+      return data.keys().hasOnly(
+               ['petId', 'companyId', 'redFlags', 'symptoms', 'vitals',
+                'photos', 'triage', 'status', 'createdAt', 'updatedAt']
+             )
+             && data.petId is string
+             && data.petId.size() > 0
+             && data.companyId == null
+             && data.status in ['pendiente', 'en_atencion', 'atendido']
+             && data.triage.keys().hasOnly(
+                  ['suggested', 'confirmed', 'reasons', 'rulesVersion']
+                )
+             && data.triage.suggested in ['emergencia', 'urgencia', 'consulta']
+             && data.triage.confirmed == null
+             && data.triage.reasons is list
+             && data.triage.rulesVersion is string
+             && data.vitals.keys().hasOnly(
+                  ['tempC', 'weightKg', 'heartRate', 'flags']
+                )
+             && data.vitals.tempC is number
+             && data.vitals.tempC >= 30
+             && data.vitals.tempC <= 45
+             && data.vitals.weightKg is number
+             && data.vitals.weightKg >= 0.05
+             && data.vitals.weightKg <= 120
+             && (data.vitals.heartRate == null
+                 || (data.vitals.heartRate is int
+                     && data.vitals.heartRate >= 20
+                     && data.vitals.heartRate <= 300))
+             && data.vitals.flags is list
+             && data.photos is list
+             && data.photos.size() <= 3;
+    }
+
+    match /visits/{visitId} {
+      allow read: if isPetOwner(resource.data.petId);
+      allow create: if isPetOwner(request.resource.data.petId)
+                    && visitIsValid(request.resource.data);
+      allow update: if isPetOwner(resource.data.petId)
+                    && visitIsValid(request.resource.data)
+                    && request.resource.data.petId == resource.data.petId;
+      allow delete: if false;
+    }
+
+    // companies/staff (Fase 4): denegado hasta definir las reglas del personal.
+    match /companies/{companyId} {
+      allow read, write: if false;
+    }
+  }
+}
