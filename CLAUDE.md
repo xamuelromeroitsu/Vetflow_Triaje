@@ -19,7 +19,7 @@ App móvil (Flutter + Firebase) que sugiere un nivel de triaje veterinario: Emer
 - Sin afirmaciones sin respaldo en textos de la app (ej. "99 % de precisión", "diagnóstico").
 
 ## Stack y estructura
-Flutter · Firebase Auth · Firestore (persistencia offline) · Storage. Código en `app/lib/` con `core/` y `features/`. El motor de triaje (`features/triage/`) no depende de la UI.
+Flutter · Firebase Auth · Firestore (persistencia offline) · Storage. Código en `app/lib/` con `shared/` (kernel) y `features/` (un slice vertical por dominio). El motor de triaje (`features/triage/`) no depende de la UI. Estructura completa: `docs/05-arquitectura/arquitectura-carpetas.md`.
 
 ## Convenciones
 - Commits: `tipo(alcance): descripción` (`feat`, `fix`, `docs`, `test`, `refactor`, `chore`).

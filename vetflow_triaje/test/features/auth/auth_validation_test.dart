@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vetflow_triaje/core/result.dart';
-import 'package:vetflow_triaje/features/auth/domain/auth_validation.dart';
-import 'package:vetflow_triaje/features/auth/domain/credentials.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
+import 'package:vetflow_triaje/features/auth/domain/validation/auth_validation.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/credentials.dart';
 
 void main() {
   group('validateCredentials', () {

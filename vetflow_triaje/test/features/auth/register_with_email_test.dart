@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vetflow_triaje/core/errors.dart';
-import 'package:vetflow_triaje/core/result.dart';
-import 'package:vetflow_triaje/features/auth/application/register_with_email.dart';
-import 'package:vetflow_triaje/features/auth/domain/app_user.dart';
-import 'package:vetflow_triaje/features/auth/domain/auth_account.dart';
-import 'package:vetflow_triaje/features/auth/domain/auth_repository.dart';
-import 'package:vetflow_triaje/features/auth/domain/user_profile.dart';
-import 'package:vetflow_triaje/features/auth/domain/user_profile_repository.dart';
-import 'package:vetflow_triaje/features/auth/domain/user_role.dart';
+import 'package:vetflow_triaje/shared/domain/errors.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
+import 'package:vetflow_triaje/features/auth/application/use_case/register_with_email.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/app_user.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/auth_account.dart';
+import 'package:vetflow_triaje/features/auth/domain/port/auth_repository.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/user_profile.dart';
+import 'package:vetflow_triaje/features/auth/domain/port/user_profile_repository.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/user_role.dart';
 
 /// Doble de prueba del puerto de autenticación.
 class _FakeAuthRepository implements AuthRepository {

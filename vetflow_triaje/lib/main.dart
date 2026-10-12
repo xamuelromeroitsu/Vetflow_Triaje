@@ -5,9 +5,22 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  // Inicialización de Firebase (Auth, Firestore, Storage).
+  //
+  // Las opciones reales las genera `flutterfire configure` sobre
+  // lib/firebase_options.dart. Hasta que eso pase, la app arranca igual en el
+  // emulador y el inicio de sesión queda desactivado (se avisa por consola).
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (error) {
+    debugPrint(
+      'Firebase no inicializado: ejecuta `flutterfire configure`. ($error)',
+    );
+  }
+
   runApp(const MyApp());
 }
 

@@ -38,7 +38,7 @@ invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
 |---|---|---|
 | ownerId | string | |
 | name | string | Obligatorio |
-| species | string | `perro`, `gato` |
+| species | string | 7 especies del MVP, sin acento: `perro`, `gato`, `huron`, `conejo`, `ave`, `roedor`, `reptil` (ADR-0005) |
 | breed | string | Obligatorio |
 | ageMonths | number | Obligatorio |
 | sex | string | Opcional |
