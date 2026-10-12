@@ -41,6 +41,7 @@ Estado: ✅ completo · 🟡 borrador (necesita revisión) · ⬜ por completar
 | Documento | Estado |
 |---|---|
 | [technical-spec.md](05-arquitectura/technical-spec.md) | 🟡 |
+| [arquitectura-carpetas.md](05-arquitectura/arquitectura-carpetas.md) | ✅ estructura en vigor |
 | [modelo-de-datos.md](05-arquitectura/modelo-de-datos.md) | 🟡 |
 | [seguridad-y-privacidad.md](05-arquitectura/seguridad-y-privacidad.md) | 🟡 |
 | [adr/](05-arquitectura/adr/README.md) (decisiones técnicas) | 🟡 |

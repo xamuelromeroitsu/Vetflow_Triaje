@@ -5,6 +5,7 @@
 /owners/{ownerId}
 /pets/{petId}
 /visits/{visitId}
+/users/{uid}                     perfil y rol del usuario autenticado
 /companies/{companyId}          (Fase 4)
    └─ /staff/{staffId}
 ```
@@ -17,12 +18,27 @@
 | email | string | |
 | createdAt | timestamp | |
 
+## users
+Perfil del usuario autenticado (Firebase Auth). Aquí vive el **rol**; las
+reglas de Firestore lo leen y el auto-registro solo puede crear `dueno`.
+El `personal` (recepción, veterinario, administrador) se dará de alta por
+invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| email | string | Email de la cuenta |
+| role | string | `dueno` · `personal` |
+| ownerId | string/null | Documento de dueño asociado |
+| companyId | string/null | Clínica (personal, Fase 4) |
+| createdAt | timestamp | |
+
+
 ## pets
 | Campo | Tipo | Notas |
 |---|---|---|
 | ownerId | string | |
 | name | string | Obligatorio |
-| species | string | `perro`, `gato` |
+| species | string | 7 especies del MVP, sin acento: `perro`, `gato`, `huron`, `conejo`, `ave`, `roedor`, `reptil` (ADR-0005) |
 | breed | string | Obligatorio |
 | ageMonths | number | Obligatorio |
 | sex | string | Opcional |

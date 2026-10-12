@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// Reglas iniciales: solo la colección de perfiles/usuarios (auth).
+//
+// El rol del usuario se guarda en users/{uid} (campo `role`) y lo leen las
+// reglas; el cliente no puede cambiarse el rol. El auto-registro solo crea
+// `dueno`: el personal (recepción, veterinario, administrador) se dará de
+// alta por invitación en Fase 2 (docs/08-admin/sistema-admin.md).
+//
+// Pendiente: colecciones de negocio (owners, pets, visits, companies) cuando
+// lleguen sus historias; hasta entonces quedan denegadas.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnProfile(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function profileIsValid() {
+      return request.resource.data.keys().hasOnly(
+               ['email', 'role', 'ownerId', 'companyId', 'createdAt', 'updatedAt']
+             )
+             && request.resource.data.email is string
+             && request.resource.data.role == 'dueno'
+             && (request.resource.data.ownerId == null
+                 || request.resource.data.ownerId is string)
+             && (request.resource.data.companyId == null
+                 || request.resource.data.companyId is string);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwnProfile(uid);
+      allow create: if isOwnProfile(uid) && profileIsValid();
+      // El rol y el email no se cambian desde el cliente.
+      allow update: if isOwnProfile(uid)
+                    && request.resource.data.role == resource.data.role
+                    && request.resource.data.email == resource.data.email;
+      allow delete: if false;
+    }
+
+    // owners, pets, visits, companies: sin reglas hasta sus historias.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
