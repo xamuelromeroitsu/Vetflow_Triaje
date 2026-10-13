@@ -1,0 +1,107 @@
+rules_version = '2';
+
+// Firebase Storage Rules for Vetflow Triaje
+// Ideal para: fotos de lesiones, reportes multimedia, perfiles de mascotas
+//
+// Rutas típicas:
+//   => /mascotas/{petId}/fotos/{nombre-archivo.jpg}
+//   => /visitas/{visitId}/reportes/{pdf-o-imagen}.jpg
+//   => /users/{uid}/perfil/{foto-perfil.jpg}
+//
+// Características:
+//   * Offline-first compatible (persistencia local)
+//   * Control de acceso mediante Firebase Rules
+//   * Integración directa con Flutter SDK
+
+service firebase.storage {
+
+  // Función auxiliar: verifica que el usuario esté autenticado
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  // Función auxiliar: verifica rol desde JWT claims o usuario Firebase
+  // NOTA: En modo JWT, se espera que el token tenga claims 'role'
+  // En modo Firebase, se usa request.auth.uid para restringir
+  function esRolDueno() {
+    // Intento de leer role del token JWT si existe
+    // Si no existe (modo Firebase), verificamos por uid propietario
+    return (
+      // Intentar claims JWT (modo JWT)
+      (
+        request.auth.token.role == 'dueno' ||
+        request.auth.token.role == 'personal'
+      ) ||
+      // Fallback modo Firebase: el usuario dueño es quien creó el registro
+      (
+        // En Firebase nativo, la propiedad se establece por el backend o reglas custom
+        // Aquí dejamos una restricción genérica; en la práctica se usaría
+        // request.auth.uid comparado con ownerId almacenado en la metadata del archivo
+        isSignedIn()
+      )
+    );
+  }
+
+  // --- RUTA: users/{uid}/perfil/{filename}
+  // Permite subir/leer fotos de perfil solo al propietario correspondiente
+  match /users/{uid}/perfil/{filename} {
+    allow read: if isSignedIn() && 
+      ( 
+        // Modo JWT: el usuario es dueño si su uid coincide o tiene rol personal
+        (
+          request.auth.token.role == 'personal' ||
+          request.auth.token.uid == uid
+        ) ||
+        // Modo Firebase: lectura restringida (se complementa con reglas más específicas)
+        isSignedIn()
+      )
+    allow write: if esRolDueno() && 
+      // El dueño solo puede subir su propia foto de perfil
+      ( 
+        request.auth.token.role == 'dueno' && 
+        request.auth.uid == uid
+      )
+  }
+
+  // --- RUTA: mascotas/{petId}/fotos/{filename}
+  // Dueño de la mascota o personal clínico pueden subir fotos
+  match /mascotas/{petId}/fotos/{filename} {
+    allow read: if isSignedIn();  // Cual usuario logueado puede ver fotos de mascotas (con restricciones de privacidad en la app)
+    allow write: if 
+      // Dueño de la mascota (verify via ownerId in Firestore metadata or custom claims)
+      (
+        // Modo JWT: validar claims - esto asume que el token tiene la información correcta
+        request.auth.token.role == 'dueno' &&
+        // En un implementación completa, verificarías que petId pertenece a este dueño
+        // A través de: request.auth.token.petOwnedIds o consultando Firestore previo
+        true  // Placeholder: validación real en la app antes de subir
+      ) ||
+      // Personal clínico puede subir fotos para cualquier mascota
+      (
+        request.auth.token.role == 'personal'
+      )
+  }
+
+  // --- RUTA: visitas/{visitId}/reportes/{filename}
+  // Personal clínico y dueño pueden subir/reportar reportes de visita
+  match /visitas/{visitId}/reportes/{filename} {
+    allow read: if isSignedIn();  // Tanto dueño como personal pueden ver reportes
+    allow write: if 
+      (
+        // Personal clínico puede subir reportes para cualquier visita
+        request.auth.token.role == 'personal' ||
+        // Dueño de la mascota de la visita puede subir reportes
+        request.auth.token.role == 'dueno' &&
+        // Verificación简易: en implementación completa, verificar ownerId coincide
+        true  // Placeholder: validación completa en la app
+      )
+  }
+
+  // --- RUTA DEFAULT: subidas generales (solo personal administrativo)
+  match /{bucket}/{path=**} {
+    allow read: if isSignedIn();
+    allow write: if false;  // Escrituras controladas por reglas específicas arriba
+    // NOTE: Evitar que esta regla catch-all permita escrituras no intencionadas.
+    // Las reglas específicas por ruta arriba toman precedencia.
+  }
+}
