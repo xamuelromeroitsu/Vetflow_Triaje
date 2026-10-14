@@ -8,4 +8,5 @@ Cada decisión importante se escribe una vez, con su motivo. Plantilla: [../../p
 | [0002](0002-duenos-y-mascotas-fuera-de-la-clinica.md) | Dueño y mascota fuera de la clínica | Propuesta |
 | [0003](0003-triaje-por-reglas-versionadas.md) | Triaje por reglas versionadas | Propuesta |
 | [0005](0005-reglas-por-especie.md) | Reglas específicas por especie | Aceptada |
+| [0006](0006-cierre-de-brechas-arquitectura.md) | Cierre de brechas de arquitectura (del 90 al 100) | Propuesta |
 | 0004 | Gestor de estado de Flutter | Pendiente |
