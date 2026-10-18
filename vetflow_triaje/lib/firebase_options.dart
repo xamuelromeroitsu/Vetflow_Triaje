@@ -32,37 +32,37 @@ class DefaultFirebaseOptions {
 
   // TODO(flutterfire-config): reemplazar por los valores reales con
   // `flutterfire configure`.
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'TODO',
-    appId: 'TODO',
-    messagingSenderId: 'TODO',
-    projectId: 'TODO',
-    storageBucket: 'TODO',
+    apiKey: 'AIzaSyBqRkGgAwx2TddjPggFPxisMVjEHkrdxd8',
+    appId: '1:722035172290:android:ab78b043813cf2187b6c5b',
+    messagingSenderId: '722035172290',
+    projectId: 'vetflow-triaje-firebase',
+    storageBucket: 'vetflow-triaje-firebase.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'TODO',
-    appId: 'TODO',
-    messagingSenderId: 'TODO',
-    projectId: 'TODO',
-    storageBucket: 'TODO',
-    iosBundleId: 'TODO',
+    apiKey: 'AIzaSyC-_kbRQuGHjp5wq7ngFAOlwnPUpMY4Fa8',
+    appId: '1:722035172290:ios:53245dce821e924d7b6c5b',
+    messagingSenderId: '722035172290',
+    projectId: 'vetflow-triaje-firebase',
+    storageBucket: 'vetflow-triaje-firebase.firebasestorage.app',
+    iosBundleId: 'com.example.vetflowTriaje',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'TODO',
-    appId: 'TODO',
-    messagingSenderId: 'TODO',
-    projectId: 'TODO',
-    storageBucket: 'TODO',
-    iosBundleId: 'TODO',
+    apiKey: 'AIzaSyC-_kbRQuGHjp5wq7ngFAOlwnPUpMY4Fa8',
+    appId: '1:722035172290:ios:53245dce821e924d7b6c5b',
+    messagingSenderId: '722035172290',
+    projectId: 'vetflow-triaje-firebase',
+    storageBucket: 'vetflow-triaje-firebase.firebasestorage.app',
+    iosBundleId: 'com.example.vetflowTriaje',
   );
-
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'TODO',
-    appId: 'TODO',
-    messagingSenderId: 'TODO',
-    projectId: 'TODO',
-    storageBucket: 'TODO',
+    apiKey: 'AIzaSyD7N5TZU3nlpk1MBpphXFfd9dL4xDsVi9o',
+    appId: '1:722035172290:web:3e68d85e8dfa77d57b6c5b',
+    messagingSenderId: '722035172290',
+    projectId: 'vetflow-triaje-firebase',
+    authDomain: 'vetflow-triaje-firebase.firebaseapp.com',
+    storageBucket: 'vetflow-triaje-firebase.firebasestorage.app',
+    measurementId: 'G-Q8N5N6YE4T',
   );
 }
