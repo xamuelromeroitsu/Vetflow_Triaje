@@ -26,3 +26,4 @@ Vetflow_Triaje/
 
 ## ⚠️ Aviso
 VetFlow es una herramienta de **ayuda a la decisión**. No diagnostica ni sustituye la evaluación de un veterinario.
+

@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
+import 'app/di/app_dependencies.dart';
+
+final AppDependencies appDependencies = AppDependencies.create();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +18,14 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // Persistencia offline de Firestore: permite capturar mascotas,
+    // síntomas y signos vitales sin conexión y reenviar al volver.
+    await FirebaseFirestore.instance.setSettings(
+      const Settings(
+        persistenceEnabled: true,
+      ),
     );
   } catch (error) {
     debugPrint(
