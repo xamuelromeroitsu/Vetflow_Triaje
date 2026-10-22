@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "flutter pub get",
+      "type": "shell",
+      "command": "flutter pub get",
+      "problemMatcher": []
+    },
+    {
+      "label": "flutter analyze",
+      "type": "shell",
+      "command": "flutter analyze",
+      "problemMatcher": [
+        "$dart"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "flutter test",
+      "type": "shell",
+      "command": "flutter test",
+      "problemMatcher": [
+        "$dart"
+      ],
+      "group": {
+        "kind": "test"
+      }
+    },
+    {
+      "label": "flutter build apk (debug)",
+      "type": "shell",
+      "command": "flutter build apk --debug",
+      "problemMatcher": []
+    }
+  ]
+}
