@@ -100,3 +100,9 @@ Ahora agrupa cinco módulos: `OwnerModule`, `PetModule`, `VisitModule`,
 - Rangos de signos vitales validados por veterinario (#6).
 - País objetivo y normativa de protección de datos (#1, #11).
 - Pantalla UI para mostrar el turno al dueño (pendiente de implementación móvil).
+
+ok, ahora para terminar la epicas faltantes
+EPC-06	Directorio y Geolocalización de Clínicas	Guiar al usuario hacia la clínica veterinaria más cercana según especialidad y horario.	Dueño de mascota, Personal de admisión	Facilitar el acceso rápido a la clínica adecuada y reducir traslados innecesarios en emergencias.	AltaEPC-07	Gestión de Citas y Consultas Programadas	Permitir el agendamiento y seguimiento de consultas para casos no urgentes.	Dueño de mascota (nivel Consulta), Veterinario, Personal administrativo	Descongestionar las salas de espera al canalizar los casos leves hacia citas programadas.	Alta
+EPC-08	Carnet de Salud Digital y Perfil	Almacenar el historial clínico, las vacunas, los contactos de emergencia y los tratamientos de cada mascota.	Dueño de mascota, Veterinario	Contar con acceso inmediato a los datos vitales de la mascota al momento de la atención.	Media
+
+Si alguno de los elementos de estas epicas ya se implemento en la pasadas epicas completadas saltatelo
