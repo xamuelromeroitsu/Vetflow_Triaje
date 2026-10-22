@@ -8,7 +8,7 @@ rules_version = '2';
 //   - users/{uid}: perfil y rol del usuario autenticado
 //   - owners/{ownerId}: dueños de mascotas (ownerId == auth.uid en MVP)
 //   - pets/{petId}: mascotas (referencia a owners/{ownerId})
-//   - visits/{visitId}: visitas/triage clínica
+//   - visits/{visitId}: visitas/triage clínica y cola
 
 service cloud.firestore {
 
@@ -30,6 +30,19 @@ service cloud.firestore {
   function visitHasRequiredFields() {
     return request.resource.data.petId is string &&
       request.resource.data.petId.size() > 0;
+  }
+
+  // Valida que el nivel de triaje sea uno de los permitidos
+  function validTriageLevel(String level) {
+    return level == 'consulta' || level == 'urgencia' || level == 'emergencia';
+  }
+
+  // Valida que el estado de cola sea uno de los permitidos
+  function validQueueStatus(String status) {
+    return status == 'pendiente' ||
+      status == 'en_atencion' ||
+      status == 'atendido' ||
+      status == 'cancelado';
   }
 
   // --- USUARIO (users/{uid}) ---
@@ -61,6 +74,8 @@ service cloud.firestore {
   }
 
   // --- VISITAS (visits/{visitId}) ---
+  // Incluye triaje (suggested/confirmed/reasons/rulesVersion) y cola
+  // (status, assignedRoom, assignedVeterinarian, position).
 
   match /visits/{visitId} {
     allow read: if isSignedIn();
