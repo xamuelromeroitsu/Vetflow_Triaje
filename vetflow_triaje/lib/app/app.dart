@@ -5,7 +5,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:vetflow_triaje/app/router/app_router.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 

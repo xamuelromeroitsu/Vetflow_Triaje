@@ -15,6 +15,7 @@
 ///  - /emergency     : Llamada de emergencia directa
 library;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vetflow_triaje/features/auth/presentation/login_screen.dart';
 import 'package:vetflow_triaje/features/auth/presentation/register_screen.dart';
@@ -28,9 +29,25 @@ import 'package:vetflow_triaje/features/triage/presentation/triage_result_screen
 import 'package:vetflow_triaje/features/triage/presentation/vet_confirmation_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/vital_signs_screen.dart';
 
+/// Redirige según el estado de autenticación.
+String? _authRedirect(BuildContext context, GoRouterState state) {
+  final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+  final loggingIn = state.location == '/login';
+  final registering = state.location == '/register';
+
+  if (!isLoggedIn) {
+    if (!loggingIn && !registering) return '/login';
+    return null;
+  }
+
+  if (loggingIn || registering) return '/pets';
+  return null;
+}
+
 /// Configuración principal del router de la aplicación.
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+  redirect: _authRedirect,
   routes: [
     // Pantalla de bienvenida / onboarding
     GoRoute(

@@ -72,8 +72,84 @@ invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
 }
 ```
 
+## clinics
+
+Directorio de clínicas veterinarias (EPC-06).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| name | string | Nombre de la clínica |
+| address | string | Dirección completa |
+| phone | string | Teléfono de contacto |
+| email | string | Correo de contacto |
+| specialties | array<string> | Especialidades (ej. medicina general, cirugía, dermatología, emergencias) |
+| hours | map | Horario de atención por día de la semana |
+| emergency24h | bool | Atiende urgencias 24 horas |
+| services | array<string> | Servicios (hospitalización, laboratorio, imágenes, urgencias) |
+| createdAt / updatedAt | timestamp | |
+
+## appointments
+
+Citas programadas para casos de nivel "Consulta" (EPC-07).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| petId | string | Mascota |
+| ownerId | string | Dueño |
+| clinicId | string | Clínica atendente |
+| veterinarianId | string/null | Veterinario asignado |
+| dateTime | timestamp | Fecha y hora de la cita |
+| status | string | `programada`, `confirmada`, `en_curso`, `completada`, `cancelada`, `reprogramada` |
+| triageLevel | string | Debe ser `consulta` |
+| reason | string | Motivo de la consulta |
+| createdAt / updatedAt | timestamp | |
+
+## health_records
+
+Carnet de salud digital de la mascota (EPC-08). Un registro por mascota.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| petId | string | Mascota |
+| ownerId | string | Dueño |
+| medicalHistory | string | Historial clínico y antecedentes |
+| allergies | string | Alergias |
+| emergencyContacts | array<{name, relation, phone}> | Contactos de emergencia |
+| referenceClinicId | string/null | Clínica de referencia / veterinario habitual |
+| createdAt / updatedAt | timestamp | |
+
+## pet_vaccines
+
+Vacunas aplicadas a una mascota (EPC-08).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| petId | string | Mascota |
+| name | string | Nombre de la vacuna |
+| dateApplied | timestamp | Fecha de aplicación |
+| nextDue | timestamp/null | Próxima dosis por vencer |
+| lot | string/null | Lote de la vacuna |
+| createdAt | timestamp | |
+
+## pet_treatments
+
+Tratamientos recetados a una mascota (EPC-08).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| petId | string | Mascota |
+| medication | string | Medicamento |
+| dose | string | Dosis |
+| frequency | string | Frecuencia de administración |
+| startDate | timestamp | Fecha de inicio |
+| endDate | timestamp/null | Fecha de fin |
+| status | string | `activo`, `completado`, `cancelado` |
+| createdAt | timestamp | |
+
 ## Índices previstos
 `visits` por (`companyId`, `status`, nivel de triaje, `createdAt`) para la cola.
+`appointments` por (`clinicId`, `dateTime`, `status`) para la agenda.
+`clinics` por (`specialties`, `emergency24h`) para el directorio.
 
 ## Pendiente
 Identificador del dueño (teléfono vs cédula) y manejo de mascotas con varios dueños.

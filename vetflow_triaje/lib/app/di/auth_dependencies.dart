@@ -20,15 +20,15 @@ class AuthModule {
     required this.signInWithEmail,
     required this.signOut,
     required this.profileRepository,
+    required this.authRepository,
   });
 
   factory AuthModule.create({
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
   }) {
-    final AuthRepository authRepository = AuthRepositoryFirebase(auth: auth);
-    final UserProfileRepository profileRepository =
-        UserProfileRepositoryFirestore(firestore: firestore);
+    final authRepository = AuthRepositoryFirebase(auth: auth);
+    final profileRepository = UserProfileRepositoryFirestore(firestore: firestore);
 
     return AuthModule(
       registerWithEmail: RegisterWithEmail(
@@ -41,8 +41,19 @@ class AuthModule {
       ),
       signOut: SignOut(authRepository: authRepository),
       profileRepository: profileRepository,
+      authRepository: authRepository,
     );
   }
+
+  final RegisterWithEmail registerWithEmail;
+  final SignInWithEmail signInWithEmail;
+  final SignOut signOut;
+  final UserProfileRepository profileRepository;
+  final AuthRepository authRepository;
+
+  /// Emite la cuenta de auth actual (o null si no hay sesión).
+  Stream<AuthAccount?> get authStateChanges => authRepository.authStateChanges;
+}
 
   final RegisterWithEmail registerWithEmail;
   final SignInWithEmail signInWithEmail;

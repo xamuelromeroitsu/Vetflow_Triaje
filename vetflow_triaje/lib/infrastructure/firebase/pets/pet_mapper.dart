@@ -32,6 +32,9 @@ class PetMapper {
       ageMonths: ageMonths,
       sex: data['sex'] is String ? data['sex'] : null,
       neutered: data['neutered'] is bool ? data['neutered'] : null,
+      weightKg: data['weightKg'] is double
+          ? data['weightKg']
+          : (data['weightKg'] is num ? (data['weightKg'] as num).toDouble() : null),
       history: data['history'] is String ? data['history'] : null,
       allergies: data['allergies'] is String ? data['allergies'] : null,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
@@ -47,6 +50,7 @@ class PetMapper {
         'ageMonths': pet.ageMonths,
         if (pet.sex != null) 'sex': pet.sex,
         if (pet.neutered != null) 'neutered': pet.neutered,
+        if (pet.weightKg != null) 'weightKg': pet.weightKg,
         if (pet.history != null) 'history': pet.history,
         if (pet.allergies != null) 'allergies': pet.allergies,
         if (pet.createdAt != null) 'createdAt': pet.createdAt,

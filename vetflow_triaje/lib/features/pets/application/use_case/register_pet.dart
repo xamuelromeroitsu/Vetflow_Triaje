@@ -20,6 +20,7 @@ class RegisterPet {
     required String ownerId,
     String? sex,
     bool? neutered,
+    double? weightKg,
     String? history,
     String? allergies,
   }) async {
@@ -31,6 +32,7 @@ class RegisterPet {
       ownerId: ownerId,
       sex: sex,
       neutered: neutered,
+      weightKg: weightKg,
       history: history,
       allergies: allergies,
     );

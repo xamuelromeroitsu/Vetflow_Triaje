@@ -6,7 +6,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/vital_signs.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -24,6 +27,13 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
   bool _isLoading = false;
   bool _hasMissingVitals = false;
 
+  late final UpdateVisit _updateVisit =
+      main.appDependencies.visitModule.updateVisit;
+
+  String _getVisitId() {
+    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+  }
+
   @override
   void dispose() {
     _tempController.dispose();
@@ -40,10 +50,39 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
         _hrController.text.isEmpty ||
         _weightController.text.isEmpty;
 
+    final visitId = _getVisitId();
+    if (visitId.isNotEmpty) {
+      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visit = visitResult.valueOrNull;
+      if (visit != null) {
+        final vitals = _getVitals();
+        final updated = Visit(
+          id: visit.id,
+          petId: visit.petId,
+          companyId: visit.companyId,
+          redFlags: visit.redFlags,
+          symptoms: visit.symptoms,
+          vitals: {
+            'tempC': vitals.tempC,
+            'weightKg': vitals.weightKg,
+            'heartRate': vitals.heartRate,
+            'flags': vitals.flags,
+          },
+          photos: visit.photos,
+          triage: visit.triage,
+          status: visit.status,
+          createdAt: visit.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await _updateVisit(updated);
+      }
+    }
+
     await Future.delayed(const Duration(milliseconds: 500));
     if (mounted) {
-      context.go('/triage/result');
+      context.go('/triage/result?visitId=$visitId');
     }
+    setState(() => _isLoading = false);
   }
 
   VitalSigns _getVitals() {

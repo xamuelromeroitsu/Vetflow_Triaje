@@ -5,8 +5,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/pets/application/use_case/register_pet.dart';
 import 'package:vetflow_triaje/features/pets/domain/model/pet.dart';
-import 'package:vetflow_triaje/features/pets/domain/validation/pet_validation.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -22,6 +24,7 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
   final _nameController = TextEditingController();
   final _breedController = TextEditingController();
   final _ageController = TextEditingController();
+  final _weightController = TextEditingController();
   final _historyController = TextEditingController();
   final _allergiesController = TextEditingController();
 
@@ -29,6 +32,9 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
   String? _selectedSex;
   bool? _neutered;
   bool _isLoading = false;
+
+  late final RegisterPet _registerPet =
+      main.appDependencies.petModule.registerPet;
 
   final List<String> _species = [
     'perro',
@@ -47,6 +53,7 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
     _nameController.dispose();
     _breedController.dispose();
     _ageController.dispose();
+    _weightController.dispose();
     _historyController.dispose();
     _allergiesController.dispose();
     super.dispose();
@@ -59,26 +66,32 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
 
     try {
       final ageMonths = int.tryParse(_ageController.text) ?? 0;
+      final weightKg = _weightController.text.isNotEmpty
+          ? double.tryParse(_weightController.text)
+          : null;
 
-      final validated = validatePet(
-        name: _nameController.text,
+      final account = main.appDependencies.authModule.authRepository.currentAccount;
+      final ownerId = account?.uid ?? '';
+
+      final result = await _registerPet(
+        name: _nameController.text.trim(),
         species: _selectedSpecies,
-        breed: _breedController.text,
+        breed: _breedController.text.trim(),
         ageMonths: ageMonths,
-        ownerId: 'owner-1', // Se obtendrá del usuario autenticado
+        ownerId: ownerId,
         sex: _selectedSex,
         neutered: _neutered,
+        weightKg: weightKg,
         history: _historyController.text.isEmpty ? null : _historyController.text,
         allergies: _allergiesController.text.isEmpty ? null : _allergiesController.text,
       );
 
-      final pet = validated.valueOrNull;
+      final pet = result.valueOrNull;
       if (pet == null) {
         setState(() => _isLoading = false);
         return;
       }
 
-      // Aquí se llamará a RegisterPet cuando se conecte al DI completo.
       if (mounted) {
         context.go('/triage/symptoms');
       }
@@ -220,6 +233,23 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+
+              AppTextField(
+                label: 'Peso (kg)',
+                hint: '12.5',
+                controller: _weightController,
+                keyboardType: TextInputType.number,
+                prefixIcon: Icons.monitor_weight,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return null;
+                  if (double.tryParse(value) == null ||
+                      double.parse(value) <= 0) {
+                    return 'Peso inválido';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
 

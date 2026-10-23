@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed-dim": "#bcc7de", "surface": "#f8f9ff", "tertiary-container": "#ff928b", "on-surface": "#0b1c30", "primary-fixed": "#71fac8", "surface-container-high": "#dce9ff", "secondary": "#545f73", "on-primary-fixed-variant": "#00513b", "surface-container-lowest": "#ffffff", "secondary-fixed": "#d8e3fb", "surface-bright": "#f8f9ff", "surface-container-highest": "#d3e4fe", "on-surface-variant": "#3c4a43", "surface-tint": "#006c4f", "tertiary-fixed": "#ffdad7", "on-background": "#0b1c30", "on-error": "#ffffff", "on-secondary-fixed": "#111c2d", "tertiary-fixed-dim": "#ffb3ad", "on-tertiary-container": "#8d0012", "on-tertiary": "#ffffff", "error": "#ba1a1a", "background": "#f8f9ff", "surface-dim": "#cbdbf5", "outline": "#6c7a73", "primary": "#006c4f", "inverse-surface": "#213145", "on-primary": "#ffffff", "error-container": "#ffdad6", "surface-container-low": "#eff4ff", "surface-variant": "#d3e4fe", "on-secondary-fixed-variant": "#3c475a", "tertiary": "#b91a24", "on-secondary-container": "#586377", "surface-container": "#e5eeff", "primary-fixed-dim": "#50ddad", "inverse-on-surface": "#eaf1ff", "secondary-container": "#d5e0f8", "outline-variant": "#bbcac1", "on-error-container": "#93000a", "inverse-primary": "#50ddad", "on-primary-container": "#004e38", "on-primary-fixed": "#002116", "on-tertiary-fixed": "#410004", "on-tertiary-fixed-variant": "#930013", "on-secondary": "#ffffff", "primary-container": "#32c798" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-md": "1rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "space-xl": "2rem", "margin": "1rem", "gutter": "1rem", "gutter-mobile": "0.75rem", "margin-tablet": "1.5rem", "space-sm": "0.5rem" }, fontFamily: { "headline-lg": ["Inter"], "headline-md": ["Inter"], "headline-sm": ["Inter"], "label-md": ["Inter"], "body-lg": ["Inter"], "body-md": ["Inter"], "vital-metric": ["Inter"], "label-lg": ["Inter"], "label-sm": ["Inter"], "headline-xl": ["Inter"], "body-sm": ["Inter"] }, fontSize: { "headline-lg": ["26px", { lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }], "vital-metric": ["28px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "700" }], "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }] } } } };</script><style>@layer base { html, body { width: 100%; margin: 0; padding: 0; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter-mobile flex items-center justify-between"><div class="flex items-center gap-space-xs"><button aria-label="Volver" class="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full text-on-surface hover:bg-surface-container transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><img alt="DOGO Triage Logo" class="h-7 w-auto object-contain ml-1" src="https://lh3.googleusercontent.com/aida/AEtjO1WVp1AQB4RLA-K3FhqzhccHVxxwEMf3DwySHrt7cd4PtDpYw-Ps8a4AE0TU2GJfz75nnkj8rVbPBqKrOGsOttuay26MXlgX9AEAgwdhc8mGm1ql56DiY81scX-HqlDoiIFtIZ2Q3BKr0gicuKxDVaReK2VZG8ySXhU2p9ImCJFFaTWVlf_FYCjIOGM4oCUgsuz7Tnm4w1KnU6j_wyjvdbGVszhY37xpcw5UQ1X8Igv1I03-jpXtuqSqmg"/><h1 class="font-headline-sm text-headline-sm text-on-surface ml-2 line-clamp-1">Detalle del Caso y Asignación</h1></div><div class="flex items-center justify-center min-w-[44px] min-h-[44px]"><img alt="Perfil" class="w-8 h-8 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdQMRk5YM7RZmXgPgEj9qWjpYw7ibO03uNJF2YJWe4aNRKioDh9ykNgHOeOFdY__41YxPHQ6W_Y4G9nr6bolTr8AmW27DF36Oh4BXIMvtgcQsreegYe2NpyFUwrrh9yMuwr2UpbaAF-g2SaKy8GEviEkFegaxQ7CPVRikuRNgbYhRknOwFuQJZP2i1pj87nLNrwkgM2wp7uAmJAhaeMwCyJxXRBFqtvGCecggvo7K0kJ_1J-GxZfQZ"/></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-safe bg-surface"><div class="flex flex-col w-full pb-8">
+<!-- Identificación del Caso y Alerta de Urgencia -->
+<div class="px-margin pt-4 pb-2">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span>
+<span class="font-label-sm text-error uppercase tracking-wider font-bold">INGRESO PRIORITARIO • 14:20</span>
+</div>
+<span class="font-label-sm px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-semibold">
+        Caso #DG-8492
+      </span>
+</div>
+<div class="flex items-baseline justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Revisión de Triaje y Preparación de Box</h2>
+<span class="font-label-md text-label-md text-secondary font-medium">Pendiente de Validación Médica</span>
+</div>
+</div>
+<!-- Tarjeta del Paciente y Tutor (Nivel 1 de Elevación) -->
+<div class="px-margin my-2">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm relative overflow-hidden">
+<!-- Borde de acento de prioridad de emergencia -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-error"></div>
+<div class="flex items-start gap-3 pl-1">
+<div class="relative shrink-0">
+<img class="w-14 h-14 rounded-full object-cover" data-alt="A noble German Shepherd dog looking attentively with ears raised in soft clinical lighting, crisp portrait, warm friendly hospital context" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWjCvWvwC_1RTwPMCrQkXzbEe_y40bSWU2Xc-wyeQAr5VUjGir0jFgwnUMifocWv0rGtfmb5y_CgCt_GyJ6d8Ma5DeI9ynSMQEO1mLBML7qSozMX82qCKGsc5EuLY3WtLSCEiZ88Poc5pbGigR_CXo9DU3vfCQBunZTHHLlw2xGWypMrjhahob1fprEaDoqxtBnfXIab7P6W3cv3b-OPi_bcQZ9Ob9GSe0uTM9iiWuacHdmkH3aU8T"/>
+<span class="absolute -bottom-1 -right-1 bg-surface-container-high rounded-full p-0.5 text-on-surface shadow-xs flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-primary">pets</span>
+</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Rocky</h3>
+<span class="font-label-sm px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-medium">
+                Macho • 6a
+              </span>
+</div>
+<span class="font-label-md text-label-md font-bold text-on-surface bg-surface-container-low px-2 py-0.5 rounded">
+              34.2 kg
+            </span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary truncate mt-0.5">
+            Pastor Alemán • Microchip: #985141002
+          </p>
+<div class="mt-2.5 pt-2.5 bg-surface-container-low/60 rounded-lg p-2.5">
+<div class="flex items-center justify-between text-secondary">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">person</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Carlos Méndez</span>
+</div>
+<a class="inline-flex items-center gap-1 font-label-sm text-primary font-bold active:scale-95 transition-transform" href="tel:+15550192834">
+<span class="material-symbols-outlined text-[14px]">call</span>
+<span>+1 555-019-2834</span>
+</a>
+</div>
+<div class="mt-2 flex items-start gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-error shrink-0">crisis_alert</span>
+<p class="font-body-sm text-body-sm text-on-surface font-medium leading-snug">
+                "Distensión abdominal aguda, dolor severo y arcadas improductivas repetidas durante 45 min."
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Módulo Comparativo de Triaje y Gravedad -->
+<div class="px-margin my-2">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-primary">analytics</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">Evaluación de Gravedad</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container px-2 py-0.5 rounded-full">DOGO IA v4.2</span>
+</div>
+<!-- Banner de Evaluación Algorítmica -->
+<div class="bg-error-container/40 p-3 rounded-lg mb-4 flex items-start gap-2.5">
+<div class="p-1 rounded-full bg-error text-on-error shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-error font-bold uppercase tracking-wide">EVALUACIÓN ALGORÍTMICA DE RIESGO</span>
+<span class="font-label-sm text-error font-extrabold">98.4% Coincidencia</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-error-container mt-0.5">ROJO — EMERGENCIA CRÍTICA</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+            Alta sospecha de <strong>Dilatación y Vólvulo Gástrico (DVG)</strong> con potencial compromiso vascular y shock hemodinámico.
+          </p>
+</div>
+</div>
+<!-- Selector de Validación por Equipo Clínico -->
+<div>
+<label class="block font-label-md text-label-md text-secondary uppercase tracking-wider mb-2">
+          ESTADO DE TRIAJE VALIDADO POR EQUIPO
+        </label>
+<div class="grid grid-cols-3 gap-2" id="triagePillGroup">
+<!-- Botón Emergencia Activo -->
+<button class="triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-error text-on-error shadow-sm scale-[1.02]" data-level="emergency" onclick="selectTriage(this, 'emergency')" type="button">
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2 h-2 rounded-full bg-surface-container-lowest animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-bold tracking-wide">ROJO</span>
+</div>
+<span class="font-label-md text-label-md font-bold">Emergencia</span>
+</button>
+<!-- Opción Urgente -->
+<button class="triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-surface-container text-secondary hover:bg-surface-container-high" data-level="urgent" onclick="selectTriage(this, 'urgent')" type="button">
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-sm text-label-sm font-bold tracking-wide">ÁMBAR</span>
+</div>
+<span class="font-label-md text-label-md font-bold">Urgencia</span>
+</button>
+<!-- Opción Consulta -->
+<button class="triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-surface-container text-secondary hover:bg-surface-container-high" data-level="consult" onclick="selectTriage(this, 'consult')" type="button">
+<div class="flex items-center gap-1 mb-1">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm font-bold tracking-wide">VERDE</span>
+</div>
+<span class="font-label-md text-label-md font-bold">Consulta</span>
+</button>
+</div>
+</div>
+<!-- Hallazgos Clínicos y Observaciones Médicas -->
+<div class="mt-3.5">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-md text-label-md text-secondary font-medium">Observaciones de Admisión Médica</label>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Prellenado por Dictado de Voz</span>
+</div>
+<div class="relative bg-surface-container-low rounded-lg p-3">
+<textarea class="w-full bg-transparent font-body-sm text-body-sm text-on-surface resize-none focus:outline-none" placeholder="Ingrese hallazgos, constantes vitales e intervenciones iniciales..." rows="3">Se confirma abdomen craneal timpánico severo a la percusión, pulsos femorales débiles y filiformes (FC 174 lpm). Mucosas pálidas y secas, TRC prolongado (&gt;2.5s). Preparada colocación inmediata de catéter IV bilateral 18G y trocarización descompresiva / gastrocentesis.</textarea>
+<div class="flex items-center justify-between mt-2 pt-2 text-secondary">
+<div class="flex items-center gap-1 text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span>Lactato: 4.8 mmol/L • SpO2: 94%</span>
+</div>
+<button class="flex items-center gap-1 text-primary hover:text-on-primary-container text-label-sm font-bold" type="button">
+<span class="material-symbols-outlined text-[16px]">mic</span>
+<span>Agregar nota</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Evidencia Clínica e Imágenes Adjuntas -->
+<div class="px-margin my-2">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-secondary">image_search</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">Archivos Subidos por el Tutor</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">2 Adjuntos • 14:14</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Foto 1: Distensión abdominal -->
+<div class="relative rounded-lg overflow-hidden group bg-surface-container">
+<img class="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200" data-alt="Close up medical perspective photo of a large German Shepherd dog lying on side showing visibly swollen cranial abdomen and taut flank under clinical examination light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjIQ0PaF1Hyq2tief9vvjDWzrhVe22Rm7RZebLNywIWb1pvwoPiPdlsJiqXrP731rCBmh7A4s0CBIcqi5nf-lBsHlMQ-RsTQAOpdoI295QsRO2TrhANMfiSV9JGQ3wmdUvPxDwnN9k7NH2amrhuqZig8Ewwt4zjfxGOGE37n-mt3T5y0Q-xekKQJe3jQlJc3QXqDZkTDphJZPZ0Gkp5A1SxByusTmSnk_GlwBIamnI1VmliJQ2QL1y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end justify-between p-2">
+<span class="font-label-sm text-surface-container-lowest font-medium">Abdomen (Lateral)</span>
+<button aria-label="Ampliar foto abdominal" class="w-7 h-7 rounded-full bg-surface-container-lowest/80 text-on-surface flex items-center justify-center backdrop-blur-sm active:scale-90 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">zoom_in</span>
+</button>
+</div>
+</div>
+<!-- Foto 2: Mucosa Oral -->
+<div class="relative rounded-lg overflow-hidden group bg-surface-container">
+<img class="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200" data-alt="Veterinary clinical macro photograph showing pale greyish pink canine gums with capillary refill assessment check, high clarity lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDJIOl22zbGuSuYKdnyK_WfFTCthFCXBCHt9jWLmX1eeKq2hPgH4_9lDigs05TO-WRhsJb2zNzmWJRA0J3NT0ZvXbVXP2GYDYtPSepRC4dByX_HrDwDi32yi4OiYRUJpFTaoZtHMVcSW2cl2kyYumbaTv5KgpUpDHYMhMZt6b0Tk-890szHnsAbSvh7KwbtJoO83YNy30TxCEcE8_wN6HBsggCVXTVWi3_navXxjFFISaUDZ9lOyFf"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-transparent to-transparent flex items-end justify-between p-2">
+<span class="font-label-sm text-surface-container-lowest font-medium">Mucosa Oral (Pálida)</span>
+<button aria-label="Ampliar foto de mucosa" class="w-7 h-7 rounded-full bg-surface-container-lowest/80 text-on-surface flex items-center justify-center backdrop-blur-sm active:scale-90 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">zoom_in</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Asignación de Box y Equipo Clínico -->
+<div class="px-margin my-2">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-primary">meeting_room</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">Unidad de Intervención y Equipo</span>
+</div>
+<span class="inline-flex items-center gap-1 text-primary font-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          Box Preparado
+        </span>
+</div>
+<div class="space-y-3">
+<!-- Selector de Puesto / Box -->
+<div>
+<label class="block font-label-md text-label-md text-secondary mb-1">Puesto / Box Asignado</label>
+<div class="relative bg-surface-container-low rounded-lg flex items-center px-3 py-2.5">
+<span class="material-symbols-outlined text-[20px] text-error mr-2.5">emergency</span>
+<div class="flex-1 min-w-0">
+<p class="font-label-lg text-label-lg text-on-surface font-bold truncate">Box de Urgencias 1 (Trauma y Reanimación)</p>
+<p class="font-body-sm text-body-sm text-secondary">Equipado: Ecógrafo FAST, Quirófano B</p>
+</div>
+<button aria-label="Cambiar asignación de box" class="text-secondary ml-1 p-1" type="button">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+</button>
+</div>
+</div>
+<!-- Cuadrícula de Personal Clínico -->
+<div class="grid grid-cols-2 gap-2.5 pt-1">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-primary">stethoscope</span>
+</div>
+<div class="min-w-0">
+<span class="block font-label-sm text-label-sm text-secondary">Veterinaria Titular</span>
+<span class="block font-label-md text-label-md text-on-surface font-bold truncate">Dra. Priya Sharma</span>
+<span class="block font-label-sm text-label-sm text-primary-container font-semibold truncate">Especialista Críticos (DVM)</span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-secondary">medical_services</span>
+</div>
+<div class="min-w-0">
+<span class="block font-label-sm text-label-sm text-secondary">Enfermero de Triaje</span>
+<span class="block font-label-md text-label-md text-on-surface font-bold truncate">James Chen</span>
+<span class="block font-label-sm text-label-sm text-secondary font-semibold truncate">RVT Jefe</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Lista de Verificación de Órdenes Clínicas -->
+<div class="px-margin my-2">
+<div class="bg-surface-container-low rounded-xl p-3.5">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">checklist</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">Órdenes Clínicas Estandarizadas para DVG</span>
+</div>
+<div class="space-y-1.5">
+<label class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary accent-primary" type="checkbox"/>
+<span>Avisar a Anestesia y preparar Quirófano 3 para Gastropexia de Urgencia</span>
+</label>
+<label class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary accent-primary" type="checkbox"/>
+<span>Bolo de choque de Plasmalyte tibio IV (90 ml/kg titulado a efecto)</span>
+</label>
+<label class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<input checked="" class="w-4 h-4 rounded text-primary accent-primary" type="checkbox"/>
+<span>Monitor ECG listo para arritmias ventriculares</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Panel de Acción Inferior -->
+<div class="mt-4 px-margin space-y-2.5">
+<button class="w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all" id="confirmActionBtn" onclick="dispatchEmergency()" type="button">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+<span>Confirmar Triaje y Despachar a Box 1</span>
+</button>
+<div class="grid grid-cols-2 gap-2.5">
+<button class="w-full min-h-[44px] py-2.5 px-3 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 active:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[18px]">emergency_share</span>
+<span class="truncate">Segunda Opinión</span>
+</button>
+<button class="w-full min-h-[44px] py-2.5 px-3 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-bold flex items-center justify-center gap-1.5 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">surgical</span>
+<span class="truncate">Vía Rápida a Quirófano</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  function selectTriage(button, level) {
+    const buttons = document.querySelectorAll('.triage-btn');
+    buttons.forEach(btn => {
+      btn.className = 'triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-surface-container text-secondary hover:bg-surface-container-high';
+    });
+
+    const confirmBtn = document.getElementById('confirmActionBtn');
+
+    if (level === 'emergency') {
+      button.className = 'triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-error text-on-error shadow-sm scale-[1.02]';
+      confirmBtn.innerHTML = '<span class="material-symbols-outlined text-[24px]">verified</span><span>Confirmar Triaje y Despachar a Box 1</span>';
+      confirmBtn.className = 'w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all';
+    } else if (level === 'urgent') {
+      button.className = 'triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-tertiary text-on-tertiary shadow-sm scale-[1.02]';
+      confirmBtn.innerHTML = '<span class="material-symbols-outlined text-[24px]">priority_high</span><span>Confirmar Ingreso Urgente</span>';
+      confirmBtn.className = 'w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-secondary-container text-on-secondary-container font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all';
+    } else {
+      button.className = 'triage-btn flex flex-col items-center justify-center py-2.5 px-2 rounded-xl transition-all duration-150 bg-primary text-on-primary shadow-sm scale-[1.02]';
+      confirmBtn.innerHTML = '<span class="material-symbols-outlined text-[24px]">check_circle</span><span>Derivar a Cola de Consulta</span>';
+      confirmBtn.className = 'w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-primary-fixed text-on-primary-fixed font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all';
+    }
+  }
+
+  function dispatchEmergency() {
+    const btn = document.getElementById('confirmActionBtn');
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[24px]">progress_activity</span><span>Despachando Equipo Clínico...</span>';
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-[24px]">done_all</span><span>Despachado • Box 1 Preparado</span>';
+      btn.classList.remove('bg-primary-container');
+      btn.classList.add('bg-primary', 'text-on-primary');
+    }, 800);
+  }
+</script></main></body></html>

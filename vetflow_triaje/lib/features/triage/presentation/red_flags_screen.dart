@@ -6,7 +6,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/red_flag_rule.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -60,6 +63,13 @@ class _RedFlagsScreenState extends State<RedFlagsScreen> {
 
   bool _isLoading = false;
 
+  late final UpdateVisit _updateVisit =
+      main.appDependencies.visitModule.updateVisit;
+
+  String _getVisitId() {
+    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+  }
+
   bool _hasPositive() => _answers.values.any((v) => v == true);
 
   int _getYesCount() => _answers.values.where((v) => v == true).length;
@@ -68,14 +78,38 @@ class _RedFlagsScreenState extends State<RedFlagsScreen> {
 
   Future<void> _continue() async {
     setState(() => _isLoading = true);
+
+    final visitId = _getVisitId();
+    if (visitId.isNotEmpty) {
+      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visit = visitResult.valueOrNull;
+      if (visit != null) {
+        final updated = Visit(
+          id: visit.id,
+          petId: visit.petId,
+          companyId: visit.companyId,
+          redFlags: _answers,
+          symptoms: visit.symptoms,
+          vitals: visit.vitals,
+          photos: visit.photos,
+          triage: visit.triage,
+          status: visit.status,
+          createdAt: visit.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await _updateVisit(updated);
+      }
+    }
+
     await Future.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       if (_hasPositive()) {
-        context.go('/triage/result');
+        context.go('/triage/result?visitId=$visitId');
       } else {
-        context.go('/triage/vitals');
+        context.go('/triage/vitals?visitId=$visitId');
       }
     }
+    setState(() => _isLoading = false);
   }
 
   @override

@@ -6,6 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -23,6 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  late final SignInWithEmail _signInWithEmail =
+      main.appDependencies.authModule.signInWithEmail;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -39,8 +43,19 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Aquí se inyectará SignInWithEmail desde AuthModule cuando la UI se conecte
-      // al DI completo. Por ahora se navega directamente al flujo de mascotas.
+      final result = await _signInWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      final appUser = result.valueOrNull;
+      if (appUser == null) {
+        setState(() {
+          _errorMessage = result.errorOrNull?.message ??
+              'No se pudo iniciar sesión';
+        });
+        return;
+      }
+
       if (mounted) {
         context.go('/pets');
       }

@@ -11,6 +11,7 @@ class Pet {
     required this.ageMonths,
     this.sex,
     this.neutered,
+    this.weightKg,
     this.history,
     this.allergies,
     this.createdAt,
@@ -25,6 +26,7 @@ class Pet {
   final int ageMonths;
   final String? sex;
   final bool? neutered;
+  final double? weightKg;
   final String? history;
   final String? allergies;
   final DateTime? createdAt;

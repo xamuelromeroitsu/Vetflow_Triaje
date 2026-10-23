@@ -1,13 +1,17 @@
 /// Pantalla de confirmación del veterinario.
 ///
 /// El veterinario confirma o corrige el nivel sugerido.
-/// Se guardan `suggested` y `confirmed` por separado.
+/// Se guardan `suggested` y `confirmed` por separado en la Visita.
 library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -19,33 +23,98 @@ class VetConfirmationScreen extends StatefulWidget {
 }
 
 class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
-  // Nivel sugerido por el motor (simulado)
-  final TriageLevel _suggested = TriageLevel.urgencia;
-
-  // Nivel confirmado por el veterinario
+  TriageLevel? _suggested;
+  List<String> _reasons = [];
   TriageLevel? _confirmed;
-
-  final List<String> _reasons = [
-    'Vómito repetido: Urgencia',
-    'Fiebre: Urgencia',
-  ];
 
   bool _isLoading = false;
 
+  late final UpdateVisit _updateVisit =
+      main.appDependencies.visitModule.updateVisit;
+
+  String _getVisitId() {
+    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVisit();
+  }
+
+  Future<void> _loadVisit() async {
+    final visitId = _getVisitId();
+    if (visitId.isEmpty) return;
+
+    final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+    final visit = visitResult.valueOrNull;
+    if (visit == null) return;
+
+    final triageMap = visit.triage;
+    if (triageMap != null) {
+      final suggestedStr = triageMap['suggested'] as String?;
+      if (suggestedStr != null) {
+        _suggested = TriageLevel.values.firstWhere(
+          (l) => l.value.toString() == suggestedStr,
+          orElse: () => TriageLevel.consulta,
+        );
+      }
+      final reasons = triageMap['reasons'];
+      if (reasons is List) {
+        _reasons = List<String>.from(reasons);
+      }
+    }
+
+    setState(() {});
+  }
+
   Future<void> _confirm() async {
-    if (_confirmed == null) return;
+    if (_confirmed == null || _suggested == null) return;
 
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (mounted) {
-      // Aquí se guardará suggested y confirmed por separado en Firestore
-      // a través del caso de uso ConfirmTriage.
-      context.go('/queue');
+
+    final visitId = _getVisitId();
+    if (visitId.isNotEmpty) {
+      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visit = visitResult.valueOrNull;
+      if (visit != null) {
+        final updated = Visit(
+          id: visit.id,
+          petId: visit.petId,
+          companyId: visit.companyId,
+          redFlags: visit.redFlags,
+          symptoms: visit.symptoms,
+          vitals: visit.vitals,
+          photos: visit.photos,
+          triage: {
+            'suggested': _suggested!.value.toString(),
+            'confirmed': _confirmed!.value.toString(),
+            'reasons': _reasons,
+            'rulesVersion': '0.2',
+          },
+          status: visit.status,
+          createdAt: visit.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await _updateVisit(updated);
+      }
     }
+
+    if (mounted) {
+      context.go('/queue?visitId=$visitId');
+    }
+    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_suggested == null) {
+      return Scaffold(
+        backgroundColor: kBackgroundColor,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
@@ -79,7 +148,6 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Nivel sugerido (sistema)
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -108,7 +176,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                   Row(
                     children: [
                       TriageLevelIndicator(
-                        level: _suggested.value.toString(),
+                        level: _suggested!.value.toString(),
                         size: 56,
                       ),
                       const SizedBox(width: 16),
@@ -117,17 +185,17 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${_suggested.label}',
+                              '${_suggested!.label}',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: triageLevelColor(
-                                  _suggested.value.toString(),
+                                  _suggested!.value.toString(),
                                 ),
                               ),
                             ),
                             Text(
-                              _suggested.message,
+                              _suggested!.message,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: kTextSecondaryColor,
@@ -165,7 +233,6 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Nivel confirmado (veterinario)
             const Text(
               'Nivel confirmado (veterinario)',
               style: TextStyle(
@@ -203,15 +270,11 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                           height: 20,
                           decoration: BoxDecoration(
                             color: _confirmed == level
-                                ? triageLevelColor(
-                                    level.value.toString(),
-                                  )
+                                ? triageLevelColor(level.value.toString())
                                 : Colors.transparent,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: triageLevelColor(
-                                level.value.toString(),
-                              ),
+                              color: triageLevelColor(level.value.toString()),
                             ),
                           ),
                           child: _confirmed == level
@@ -268,8 +331,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Advertencia si el nivel se baja (no debería pasar por reglas)
-            if (_confirmed != null && _confirmed!.value < _suggested.value)
+            if (_confirmed != null && _confirmed!.value < _suggested!.value)
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -303,7 +365,9 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
             const SizedBox(height: 16),
             SecondaryButton(
               text: 'Saltar confirmación',
-              onPressed: _isLoading ? null : () => context.go('/queue'),
+              onPressed: _isLoading
+                  ? null
+                  : () => context.go('/queue?visitId=${_getVisitId()}'),
             ),
           ],
         ),

@@ -15,6 +15,11 @@ abstract class QueueRepository {
     String? companyId,
   });
 
+  /// Observa la cola pendiente en tiempo real.
+  Stream<Result<List<QueueEntry>>> watchPendingQueue({
+    String? companyId,
+  });
+
   Future<Result<QueueEntry>> update(QueueEntry entry);
 
   Future<Result<void>> assignRoomAndVeterinarian({

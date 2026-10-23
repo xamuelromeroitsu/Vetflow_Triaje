@@ -6,23 +6,174 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/triage/application/use_case/evaluate_triage.dart';
+import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/symptom_entry.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/vital_signs.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
-class TriageResultScreen extends StatelessWidget {
+class TriageResultScreen extends StatefulWidget {
   const TriageResultScreen({super.key});
 
   @override
+  State<TriageResultScreen> createState() => _TriageResultScreenState();
+}
+
+class _TriageResultScreenState extends State<TriageResultScreen> {
+  TriageLevel? _suggestedLevel;
+  List<String> _reasons = [];
+  String _rulesVersion = '0.2';
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  late final EvaluateTriage _evaluateTriage =
+      main.appDependencies.triageModule.evaluateTriage;
+  late final UpdateVisit _updateVisit =
+      main.appDependencies.visitModule.updateVisit;
+
+  String _getVisitId() {
+    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAndEvaluate();
+  }
+
+  Future<void> _loadAndEvaluate() async {
+    final visitId = _getVisitId();
+    if (visitId.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'No se encontró la visita';
+      });
+      return;
+    }
+
+    final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+    final visit = visitResult.valueOrNull;
+    if (visit == null) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'No se pudo cargar la visita';
+      });
+      return;
+    }
+
+    final symptomsMap = visit.symptoms;
+    final vitalsMap = visit.vitals;
+    final redFlags = visit.redFlags ?? {};
+
+    final symptomEntries = <SymptomEntry>[];
+    if (symptomsMap != null) {
+      final items = (symptomsMap['items'] as List<dynamic>?)
+          ?.cast<String>()
+          .toList() ??
+          [];
+      final notes = (symptomsMap['notes'] as String?) ?? '';
+      final since = (symptomsMap['since'] as String?) ?? '';
+      final category = (symptomsMap['category'] as String?) ?? 'General';
+      if (items.isNotEmpty) {
+        symptomEntries.add(
+          SymptomEntry(
+            category: category,
+            items: items,
+            notes: notes.isEmpty ? null : notes,
+            since: since.isEmpty ? null : since,
+          ),
+        );
+      }
+    }
+
+    final vitals = VitalSigns(
+      tempC: vitalsMap?['tempC'] is num ? (vitalsMap['tempC'] as num).toDouble() : null,
+      heartRate: vitalsMap?['heartRate'] is int ? vitalsMap['heartRate'] : null,
+      weightKg: vitalsMap?['weightKg'] is num ? (vitalsMap['weightKg'] as num).toDouble() : null,
+      flags: vitalsMap?['flags'] is List ? List<String>.from(vitalsMap['flags']) : null,
+    );
+
+    final species = 'perro'; // TODO: obtener de la mascota asociada
+
+    final result = _evaluateTriage.call(
+      redFlags: Map<String, bool?>.from(redFlags),
+      symptoms: symptomEntries,
+      vitals: vitals,
+      species: species,
+      hasMissingVitals: vitals.tempC == null ||
+          vitals.heartRate == null ||
+          vitals.weightKg == null,
+    );
+
+    // Guardar resultado en la visita
+    final updated = Visit(
+      id: visit.id,
+      petId: visit.petId,
+      companyId: visit.companyId,
+      redFlags: visit.redFlags,
+      symptoms: visit.symptoms,
+      vitals: visit.vitals,
+      photos: visit.photos,
+      triage: {
+        'suggested': result.suggested.value.toString(),
+        'confirmed': null,
+        'reasons': result.reasons,
+        'rulesVersion': result.rulesVersion,
+      },
+      status: visit.status,
+      createdAt: visit.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    await _updateVisit(updated);
+
+    setState(() {
+      _suggestedLevel = result.suggested;
+      _reasons = result.reasons;
+      _rulesVersion = result.rulesVersion;
+      _isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Simulación de resultado del motor de triaje
-    final suggestedLevel = TriageLevel.urgencia;
-    final reasons = [
-      'Vómito repetido: Urgencia',
-      'Fiebre: Urgencia',
-      'Respuesta "no sé" en descarte: mínimo Urgencia',
-    ];
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: kBackgroundColor,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Scaffold(
+        backgroundColor: kBackgroundColor,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: kErrorColor),
+              const SizedBox(height: 16),
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: kTextPrimaryColor),
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                text: 'Volver',
+                onPressed: () => context.go('/pets'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final suggestedLevel = _suggestedLevel!;
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
@@ -32,7 +183,6 @@ class TriageResultScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Tarjeta del nivel sugerido
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(32),
@@ -73,8 +223,6 @@ class TriageResultScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Motivos
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(20),
@@ -88,7 +236,7 @@ class TriageResultScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                ...reasons.map(
+                ..._reasons.map(
                   (reason) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
@@ -129,15 +277,15 @@ class TriageResultScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Botones de acción
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 PrimaryButton(
                   text: 'Confirmar con veterinario',
-                  onPressed: () => context.go('/triage/vet-confirmation'),
+                  onPressed: () => context.go(
+                    '/triage/vet-confirmation?visitId=${_getVisitId()}',
+                  ),
                   icon: Icons.medical_information,
                 ),
                 const SizedBox(height: 12),

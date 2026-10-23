@@ -22,3 +22,14 @@ Estados: `Por hacer` · `En curso` · `En revisión` · `Hecho` · `Bloqueado`
 | TAR-16 | — | Auth email/contraseña + rol (código y tests) | Mobile + Backend | Hecho |
 | TAR-17 | — | Verificar registro/login/logout en dispositivo | QA | Bloqueado (falta `flutterfire configure` + proveedor email en consola) |
 | TAR-18 | US-04, US-05 | Reglas específicas por especie en el motor (ADR-0005) | Mobile | Por hacer (código retirado a la espera de validación veterinaria) |
+| TAR-19 | US-12, US-13, US-14 | Modelo de datos de clínicas (colección `clinics`) | Backend | Por hacer |
+| TAR-20 | US-12, US-13 | UI del directorio de clínicas con filtros por especialidad y horario | Mobile | Por hacer |
+| TAR-21 | US-13 | Geolocalización y clínica más cercana | Mobile | Por hacer |
+| TAR-22 | US-15, US-16, US-17 | Modelo de datos de citas (colección `appointments`) | Backend | Por hacer |
+| TAR-23 | US-15 | UI de agendamiento de cita (solo triaje Consulta) | Mobile | Por hacer |
+| TAR-24 | US-16 | UI de mis citas programadas | Mobile | Por hacer |
+| TAR-25 | US-17 | UI de agenda de citas para personal de clínica | Mobile | Por hacer |
+| TAR-26 | US-18, US-19, US-20 | Modelo de datos de carnet de salud (`health_records`, vacunas, tratamientos, contactos) | Backend | Por hacer |
+| TAR-27 | US-18 | UI de carnet de salud digital de la mascota | Mobile | Por hacer |
+| TAR-28 | US-19 | UI de registro de vacunas y tratamientos (veterinario) | Mobile | Por hacer |
+| TAR-29 | US-20 | UI de contactos de emergencia de la mascota | Mobile | Por hacer |

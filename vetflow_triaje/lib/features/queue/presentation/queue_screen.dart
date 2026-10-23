@@ -2,14 +2,17 @@
 ///
 /// Muestra los casos ordenados por prioridad de triaje, con asignación
 /// de sala y veterinario, y opción de llamada de emergencia.
+/// La cola se observa en tiempo real desde Firestore.
 library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
 import 'package:vetflow_triaje/features/queue/domain/model/queue_status.dart';
 import 'package:vetflow_triaje/features/queue/domain/service/queue_service.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -21,164 +24,141 @@ class QueueScreen extends StatefulWidget {
 }
 
 class _QueueScreenState extends State<QueueScreen> {
-  final List<QueueEntry> _queue = [
-    QueueEntry(
-      id: 'q-1',
-      visitId: 'v-1',
-      petId: 'pet-1',
-      ownerId: 'owner-1',
-      triageLevel: TriageLevel.emergencia,
-      status: QueueStatus.pendiente,
-      createdAt: DateTime.now().subtract(const Duration(minutes: 5)),
-    ),
-    QueueEntry(
-      id: 'q-2',
-      visitId: 'v-2',
-      petId: 'pet-2',
-      ownerId: 'owner-2',
-      triageLevel: TriageLevel.urgencia,
-      status: QueueStatus.pendiente,
-      createdAt: DateTime.now().subtract(const Duration(minutes: 10)),
-    ),
-    QueueEntry(
-      id: 'q-3',
-      visitId: 'v-3',
-      petId: 'pet-3',
-      ownerId: 'owner-3',
-      triageLevel: TriageLevel.consulta,
-      status: QueueStatus.enAtencion,
-      assignedRoom: 'Sala 3',
-      assignedVeterinarian: 'Dra. García',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 15)),
-    ),
-  ];
+  late final WatchQueue _watchQueue =
+      main.appDependencies.queueModule.watchQueue;
 
   @override
   Widget build(BuildContext context) {
-    final queueService = QueueService();
-    final ordered = queueService.withPositions(queueService.orderByPriority(_queue));
+    return StreamBuilder<Result<List<QueueEntry>>>(
+      stream: _watchQueue.call(),
+      builder: (context, snapshot) {
+        final queueResult = snapshot.data;
+        final ordered = queueResult?.valueOrNull ?? <QueueEntry>[];
 
-    return Scaffold(
-      backgroundColor: kBackgroundColor,
-      appBar: AppBar(
-        title: const Text('Cola de atención'),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.call, color: kErrorColor),
-            onPressed: () => context.go('/emergency'),
+        return Scaffold(
+          backgroundColor: kBackgroundColor,
+          appBar: AppBar(
+            title: const Text('Cola de atención'),
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.call, color: kErrorColor),
+                onPressed: () => context.go('/emergency'),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Estado de red
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Row(
+          body: Column(
+            children: [
+              // Estado de red
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.wifi, size: 16, color: kSuccessColor),
-                    SizedBox(width: 6),
+                    const Row(
+                      children: [
+                        Icon(Icons.wifi, size: 16, color: kSuccessColor),
+                        SizedBox(width: 6),
+                        Text(
+                          'Red Activa',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: kTextPrimaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
                     Text(
-                      'Red Activa',
-                      style: TextStyle(
+                      '${ordered.where((e) => e.status == QueueStatus.pendiente).length} casos pendientes',
+                      style: const TextStyle(
                         fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: kTextPrimaryColor,
+                        color: kTextSecondaryColor,
                       ),
                     ),
                   ],
                 ),
-                Text(
-                  '${ordered.where((e) => e.status == QueueStatus.pendiente).length} casos pendientes',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: kTextSecondaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
 
-          // Clínicas cercanas (resumen)
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: kSurfaceColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
+              // Clínicas cercanas (resumen)
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: kSurfaceColor,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.local_hospital, color: kPrimaryColor),
-                    SizedBox(width: 8),
-                    Text(
-                      'Clínicas cercanas',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: kTextPrimaryColor,
-                      ),
+                    const Row(
+                      children: [
+                        Icon(Icons.local_hospital, color: kPrimaryColor),
+                        SizedBox(width: 8),
+                        Text(
+                          'Clínicas cercanas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: kTextPrimaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _ClinicChip(
+                            name: 'VetCare Clínica',
+                            distance: '1.2 km',
+                            isOpen: true,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _ClinicChip(
+                            name: 'DOGO Veterinaria 24/7',
+                            distance: '2.5 km',
+                            isOpen: true,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ClinicChip(
-                        name: 'VetCare Clínica',
-                        distance: '1.2 km',
-                        isOpen: true,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _ClinicChip(
-                        name: 'DOGO Veterinaria 24/7',
-                        distance: '2.5 km',
-                        isOpen: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+              ),
 
-          // Lista de cola
-          Expanded(
-            child: ordered.isEmpty
-                ? EmptyState(
-                    icon: Icons.queue,
-                    title: 'Cola vacía',
-                    subtitle: 'No hay casos pendientes en este momento.',
-                    buttonText: 'Nuevo triaje',
-                    onButtonPressed: () => context.go('/pets'),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: ordered.length,
-                    itemBuilder: (context, index) {
-                      final entry = ordered[index];
-                      return _QueueEntryCard(
-                        entry: entry,
-                        position: entry.position ?? index + 1,
-                      );
-                    },
-                  ),
+              // Lista de cola
+              Expanded(
+                child: ordered.isEmpty
+                    ? EmptyState(
+                        icon: Icons.queue,
+                        title: 'Cola vacía',
+                        subtitle:
+                            'No hay casos pendientes en este momento.',
+                        buttonText: 'Nuevo triaje',
+                        onButtonPressed: () => context.go('/pets'),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: ordered.length,
+                        itemBuilder: (context, index) {
+                          final entry = ordered[index];
+                          return _QueueEntryCard(
+                            entry: entry,
+                            position: entry.position ?? index + 1,
+                          );
+                        },
+                      ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

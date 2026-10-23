@@ -6,6 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -26,6 +27,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  late final RegisterWithEmail _registerWithEmail =
+      main.appDependencies.authModule.registerWithEmail;
+  late final RegisterOwner _registerOwner =
+      main.appDependencies.ownerModule.registerOwner;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -45,10 +51,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      // Aquí se inyectará RegisterWithEmail + RegisterOwner cuando la UI
-      // Se conecte al DI completo. Por ahora se navega al flujo de mascotas.
+      final authResult = await _registerWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      final appUser = authResult.valueOrNull;
+      if (appUser == null) {
+        setState(() {
+          _errorMessage = authResult.errorOrNull?.message ??
+              'No se pudo crear la cuenta';
+        });
+        return;
+      }
+
+      final ownerResult = await _registerOwner(
+        name: _nameController.text.trim(),
+        phone: _phoneController.text.trim(),
+        email: _emailController.text.trim(),
+        ownerId: appUser.uid,
+      );
+      if (ownerResult.valueOrNull == null) {
+        setState(() {
+          _errorMessage = ownerResult.errorOrNull?.message ??
+              'La cuenta se creó pero no se pudo registrar el propietario';
+        });
+        return;
+      }
+
       if (mounted) {
-        context.go('/pets/register');
+        context.go('/pets');
       }
     } catch (e) {
       setState(() {

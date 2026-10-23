@@ -37,9 +37,10 @@ features/<dominio>/
 │   └── use_case/      RegisterWithEmail, SignInWithEmail, SignOut…
 ```
 
-Estado actual: solo `features/auth/` está implementado. `triage/`, `pets/` y
-`owners/` tienen su carpeta creada y documentada; se rellenan cuando entren
-sus historias.
+Estado actual: `auth/`, `owners/`, `pets/`, `triage/`, `queue/` y `clinics/`
+tienen carpeta e implementación propia. `infrastructure/firebase/` contiene
+los adaptadores de Firestore y Storage para esos dominios. La UI está conectada
+a los casos de uso de autenticación, mascotas, visitas, triaje, cola y clínicas.
 
 ## 3 · `infrastructure/` — lo externo al negocio
 
@@ -49,9 +50,14 @@ Implementa los puertos del dominio y recibe las interacciones del usuario:
 infrastructure/
 ├── firebase/          adaptadores de salida (driven adapters)
 │   ├── auth/          Firebase Auth → implementa el puerto AuthRepository
-│   └── profile/       Firestore users/{uid} → UserProfileRepository + mapper
-└── presentation/      adaptador de entrada: pantallas, widgets e inputs
-                       (se crea cuando llegue la UI)
+│   ├── owners/        Firestore owners/{ownerId} → FirestoreOwnerRepository
+│   ├── pets/          Firestore pets/{petId} → FirestorePetRepository
+│   ├── profile/       Firestore users/{uid} → UserProfileRepository + mapper
+│   ├── visits/        Firestore visits/{visitId} → FirestoreVisitRepository
+│   ├── queue/         Firestore visits/{visitId} → FirestoreQueueRepository
+│   ├── clinics/       Firestore clinics/{clinicId} → FirestoreClinicRepository
+│   └── storage/       Firebase Storage → PetPhotoStorage
+└── presentation/      pantallas y widgets (infrastructure/presentation/)
 ```
 
 ## Regla de dependencia
@@ -74,7 +80,7 @@ app  ──conoce──▶  features  ◀──implementa──  infrastructure
 | Hexágono / dominio | `features/<dominio>/domain/` |
 | Puerto (out-port) | `features/<dominio>/domain/port/` |
 | Caso de uso (in-port) | `features/<dominio>/application/use_case/` |
-| Adaptador driven | `infrastructure/firebase/` |
+| Adaptador driven | `infrastructure/firebase/<dominio>/` |
 | Adaptador driving | `infrastructure/presentation/` (futuro) |
 | Mapper | `user_profile_mapper.dart` (Firestore ↔ entidad) |
 | Composition root | `app/di/` |

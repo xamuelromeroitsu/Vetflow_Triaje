@@ -9,6 +9,11 @@ rules_version = '2';
 //   - owners/{ownerId}: dueños de mascotas (ownerId == auth.uid en MVP)
 //   - pets/{petId}: mascotas (referencia a owners/{ownerId})
 //   - visits/{visitId}: visitas/triage clínica y cola
+//   - clinics/{clinicId}: directorio de clínicas veterinarias
+//   - appointments/{appointmentId}: citas programadas
+//   - health_records/{recordId}: carnet de salud de la mascota
+//   - pet_vaccines/{vaccineId}: vacunas de la mascota
+//   - pet_treatments/{treatmentId}: tratamientos de la mascota
 
 service cloud.firestore {
 
@@ -22,8 +27,13 @@ service cloud.firestore {
     return request.auth.uid == ownerId;
   }
 
+  /// Lee el rol del usuario desde su perfil en users/{uid}.
+  function userRole() {
+    return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+  }
+
   function isPersonal() {
-    return request.auth.token.role == 'personal';
+    return isSignedIn() && userRole() == 'personal';
   }
 
   // Valida que un documento de visita tenga los campos obligatorios
@@ -43,6 +53,26 @@ service cloud.firestore {
       status == 'en_atencion' ||
       status == 'atendido' ||
       status == 'cancelado';
+  }
+
+  // Valida que el estado de cita sea uno de los permitidos
+  function validAppointmentStatus(String status) {
+    return status == 'programada' ||
+      status == 'confirmada' ||
+      status == 'en_curso' ||
+      status == 'completada' ||
+      status == 'cancelada' ||
+      status == 'reprogramada';
+  }
+
+  // Devuelve el ownerId de una mascota dada su petId
+  function petOwnerId(String petId) {
+    return get(/databases/$(database)/documents/pets/$(petId)).data.ownerId;
+  }
+
+  // Verifica si el usuario es dueño de la mascota dada por petId
+  function isPetOwner(String petId) {
+    return isSignedIn() && isOwner(petOwnerId(petId));
   }
 
   // --- USUARIO (users/{uid}) ---
@@ -85,6 +115,68 @@ service cloud.firestore {
         get(/databases/$(database)/documents/pets/$(request.resource.data.petId)).data.ownerId
       ) ||
       isPersonal();
+    allow delete: if false;
+  }
+
+  // --- CLÍNICAS (clinics/{clinicId}) ---
+  // Directorio legible por cualquier usuario autenticado;
+  // escritura solo para personal.
+
+  match /clinics/{clinicId} {
+    allow read: if isSignedIn();
+    allow create: if isSignedIn() && isPersonal();
+    allow update: if isPersonal();
+    allow delete: if false;
+  }
+
+  // --- CITAS (appointments/{appointmentId}) ---
+  // Solo el dueño de la mascota o personal pueden leer/escribir.
+  // El nivel de triaje debe ser "consulta".
+
+  match /appointments/{appointmentId} {
+    allow read: if isSignedIn() &&
+      (isOwner(request.resource.data.ownerId) || isPersonal());
+    allow create: if isSignedIn() &&
+      request.resource.data.triageLevel == 'consulta' &&
+      (isOwner(request.resource.data.ownerId) || isPersonal());
+    allow update: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow delete: if false;
+  }
+
+  // --- CARNET DE SALUD (health_records/{recordId}) ---
+  // Vinculado a una mascota. Lectura para dueño y personal;
+  // escritura para el dueño (contactos) y personal (historial clínico).
+
+  match /health_records/{recordId} {
+    allow read: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow create: if isSignedIn() &&
+      isPetOwner(request.resource.data.petId);
+    allow update: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow delete: if false;
+  }
+
+  // --- VACUNAS (pet_vaccines/{vaccineId}) ---
+  match /pet_vaccines/{vaccineId} {
+    allow read: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow create: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow update: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow delete: if false;
+  }
+
+  // --- TRATAMIENTOS (pet_treatments/{treatmentId}) ---
+  match /pet_treatments/{treatmentId} {
+    allow read: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow create: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
+    allow update: if isSignedIn() &&
+      (isPetOwner(request.resource.data.petId) || isPersonal());
     allow delete: if false;
   }
 

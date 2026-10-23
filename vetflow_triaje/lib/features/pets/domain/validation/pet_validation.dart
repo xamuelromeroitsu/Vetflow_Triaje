@@ -26,6 +26,7 @@ Result<Pet> validatePet({
   required String ownerId,
   String? sex,
   bool? neutered,
+  double? weightKg,
   String? history,
   String? allergies,
 }) {
@@ -82,6 +83,16 @@ Result<Pet> validatePet({
     );
   }
 
+  if (weightKg != null && weightKg! <= 0) {
+    errors.add(
+      const FieldError(
+        field: 'weightKg',
+        code: FieldErrorCode.outOfRange,
+        message: 'El peso debe ser mayor a 0 kg',
+      ),
+    );
+  }
+
   if (ownerId.isEmpty) {
     errors.add(
       const FieldError(
@@ -111,6 +122,7 @@ Result<Pet> validatePet({
       ageMonths: ageMonths,
       sex: sex?.trim().isNotEmpty == true ? sex : null,
       neutered: neutered,
+      weightKg: weightKg,
       history: history?.trim().isNotEmpty == true ? history : null,
       allergies: allergies?.trim().isNotEmpty == true ? allergies : null,
     ),

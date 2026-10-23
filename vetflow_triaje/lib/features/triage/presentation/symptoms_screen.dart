@@ -5,9 +5,13 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/symptom_entry.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/symptom_rule.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
+import 'package:vetflow_triaje/main.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -88,6 +92,13 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
 
   bool _isLoading = false;
 
+  late final UpdateVisit _updateVisit =
+      main.appDependencies.visitModule.updateVisit;
+
+  String _getVisitId() {
+    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+  }
+
   void _toggleSymptom(String category, String item) {
     final entry = SymptomEntry(category: category, items: [item]);
     setState(() {
@@ -109,12 +120,41 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
   }
 
   Future<void> _continue() async {
+    if (_selectedSymptoms.isEmpty) return;
+
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (mounted) {
-      // Guardar síntomas seleccionados para usar en el triaje
-      context.go('/triage/red-flags');
+
+    final visitId = _getVisitId();
+    if (visitId.isNotEmpty) {
+      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visit = visitResult.valueOrNull;
+      if (visit != null) {
+        final updated = Visit(
+          id: visit.id,
+          petId: visit.petId,
+          companyId: visit.companyId,
+          redFlags: visit.redFlags,
+          symptoms: {
+            'category': _selectedSymptoms.first.category,
+            'items': _selectedSymptoms.expand((e) => e.items).toList(),
+            'notes': _selectedSymptoms.map((e) => e.notes).whereType<String>().toList().join('; '),
+            'since': _selectedSymptoms.map((e) => e.since).whereType<String>().toList().join('; '),
+          },
+          vitals: visit.vitals,
+          photos: visit.photos,
+          triage: visit.triage,
+          status: visit.status,
+          createdAt: visit.createdAt,
+          updatedAt: DateTime.now(),
+        );
+        await _updateVisit(updated);
+      }
     }
+
+    if (mounted) {
+      context.go('/triage/red-flags?visitId=$visitId');
+    }
+    setState(() => _isLoading = false);
   }
 
   @override

@@ -164,6 +164,25 @@ class FirestoreQueueRepository implements QueueRepository {
   }
 
   @override
+  Stream<Result<List<QueueEntry>>> watchPendingQueue({
+    String? companyId,
+  }) {
+    var query = _visits.where('status', isEqualTo: QueueStatus.pendiente.value);
+
+    if (companyId != null) {
+      query = query.where('companyId', isEqualTo: companyId);
+    }
+
+    return query.snapshots().map((snapshot) {
+      final entries = <QueueEntry>[];
+      for (final doc in snapshot.docs) {
+        entries.add(_docToEntry(doc.id, doc.data()));
+      }
+      return Result.ok(entries);
+    });
+  }
+
+  @override
   Future<Result<QueueEntry>> update(QueueEntry entry) async {
     try {
       await _visits.doc(entry.id).update({
