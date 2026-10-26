@@ -38,4 +38,4 @@ carpeta documentada, a la espera de sus historias.
 Gestor de estado (Provider / Riverpod / Bloc) y navegación: decidir en el Paso 0 con un ADR.
 
 ## Más detalle
-[modelo-de-datos.md](modelo-de-datos.md) · [seguridad-y-privacidad.md](seguridad-y-privacidad.md) · [adr/](adr/README.md)
+[firebase-modelo-db.md](firebase-modelo-db.md) · [seguridad-y-privacidad.md](seguridad-y-privacidad.md) · [adr/](adr/README.md)

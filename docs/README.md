@@ -43,7 +43,7 @@ Estado: ✅ completo · 🟡 borrador (necesita revisión) · ⬜ por completar
 | [technical-spec.md](05-arquitectura/technical-spec.md) | 🟡 |
 | [arquitectura-carpetas.md](05-arquitectura/arquitectura-carpetas.md) | ✅ estructura en vigor |
 | [arquitectura-conceptos-y-brechas.md](05-arquitectura/arquitectura-conceptos-y-brechas.md) | ✅ conceptos · brechas → ADR-0006 |
-| [modelo-de-datos.md](05-arquitectura/modelo-de-datos.md) | 🟡 |
+| [firebase-modelo-db.md](05-arquitectura/firebase-modelo-db.md) | 🟡 propuesta para el MVP; requiere validar reglas de seguridad |
 | [seguridad-y-privacidad.md](05-arquitectura/seguridad-y-privacidad.md) | 🟡 |
 | [adr/](05-arquitectura/adr/README.md) (decisiones técnicas) | 🟡 |
 
