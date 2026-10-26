@@ -21,6 +21,14 @@ App móvil (Flutter + Firebase) que sugiere un nivel de triaje veterinario: Emer
 ## Stack y estructura
 Flutter · Firebase Auth · Firestore (persistencia offline) · Storage. Código en `app/lib/` con `shared/` (kernel) y `features/` (un slice vertical por dominio). El motor de triaje (`features/triage/`) no depende de la UI. Estructura completa: `docs/05-arquitectura/arquitectura-carpetas.md`.
 
+## Herramientas
+- **Notion (MCP remoto)**: `opencode.json` declara el servidor `notion` → `https://mcp.notion.com/mcp`. Permite leer, crear y actualizar páginas de Notion (documentación de producto compartida con el equipo).
+  - Cada persona del equipo autentica su propia sesión, una vez: `opencode mcp auth notion` (OAuth en el navegador). El token queda en `~/.local/share/opencode/mcp-auth.json`, **nunca en el repo**.
+  - `opencode mcp list` comprueba el estado de la conexión.
+  - Herramientas: prefijadas con `notion-` (p. ej. `notion-search`, `notion-fetch`, `notion-create-pages`, `notion-update-page`).
+- **Skills**: `.opencode/skills/` (Firebase CLI, Auth, Firestore, reglas de seguridad, arquitectura). Ver `.opencode/skills/README.md`.
+- **VS Code**: `vetflow_triaje/.vscode/` con `launch.json` (debug/profile/release) y `tasks.json` (analyze, test, build).
+
 ## Convenciones
 - Commits: `tipo(alcance): descripción` (`feat`, `fix`, `docs`, `test`, `refactor`, `chore`).
 - Si cambia una decisión, actualizar el documento afectado en el mismo commit.
