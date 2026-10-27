@@ -6,7 +6,6 @@ library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
-import 'package:vetflow_triaje/features/queue/domain/model/queue_status.dart';
 import 'package:vetflow_triaje/features/queue/domain/port/queue_repository.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 import 'package:vetflow_triaje/shared/domain/errors.dart';
@@ -221,7 +220,7 @@ class FirestoreQueueRepository implements QueueRepository {
         'assignedVeterinarian': veterinarianId,
         'updatedAt': DateTime.now(),
       });
-      return const Result.ok(null);
+      return Result.ok(null);
     } on FirebaseException catch (error) {
       return Result.failure(
         DomainError(

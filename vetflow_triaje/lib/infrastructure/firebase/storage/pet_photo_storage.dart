@@ -19,10 +19,6 @@ class PetPhotoStorage {
   static const int maxSizeBytes = 5 * 1024 * 1024;
 
   /// Sube una foto y devuelve la URL de descarga.
-  ///
-    [petId] es el ID de la mascota. [fileName] es el nombre del archivo.
-    [bytes] son los datos de la imagen. [contentType] debe ser image/jpeg o
-    image/png.
   Future<String> uploadPhoto({
     required String petId,
     required String fileName,
@@ -39,15 +35,14 @@ class PetPhotoStorage {
       );
     }
 
-    final path = 'mascotas/$petId/fotos/$fileName';
-    final ref = _storage.ref().child(path);
-    await ref.putData(bytes, SettableMetadata(contentType: contentType));
-    return ref.getDownloadURL();
+    final ref = _storage.ref().child('mascotas/$petId/fotos/$fileName');
+    final metadata = SettableMetadata(contentType: contentType);
+    final task = await ref.putData(bytes, metadata);
+    return task.ref.getDownloadURL();
   }
 
-  /// Elimina una foto de Storage.
-  Future<void> deletePhoto({required String petId, required String fileName}) async {
-    final path = 'mascotas/$petId/fotos/$fileName';
-    await _storage.ref().child(path).delete();
+  /// Elimina una foto.
+  Future<void> deletePhoto(String path) async {
+    await _storage.ref(path).delete();
   }
 }

@@ -5,8 +5,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/auth/application/use_case/sign_in_with_email.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -25,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   late final SignInWithEmail _signInWithEmail =
-      main.appDependencies.authModule.signInWithEmail;
+      appDependencies.authModule.signInWithEmail;
 
   @override
   void dispose() {
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (value == null || value.isEmpty) {
                           return 'El email es obligatorio';
                         }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        if (!RegExp(r'^[\w.-]+@([\w-]+\.)+[\w-]{2,}$')
                             .hasMatch(value)) {
                           return 'Ingresa un email válido';
                         }
@@ -163,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     PrimaryButton(
                       text: 'Iniciar Sesión',
-                      onPressed: _isLoading ? null : _signIn,
+                      onPressed: _isLoading ? null : () => _signIn(),
                     ),
                     const SizedBox(height: 16),
                     const Text(
@@ -205,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );

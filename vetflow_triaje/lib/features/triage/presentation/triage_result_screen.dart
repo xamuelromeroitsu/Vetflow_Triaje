@@ -6,15 +6,14 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/evaluate_triage.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/symptom_entry.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
-import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/vital_signs.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -33,12 +32,12 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
   String? _errorMessage;
 
   late final EvaluateTriage _evaluateTriage =
-      main.appDependencies.triageModule.evaluateTriage;
+      appDependencies.triageModule.evaluateTriage;
   late final UpdateVisit _updateVisit =
-      main.appDependencies.visitModule.updateVisit;
+      appDependencies.visitModule.updateVisit;
 
   String _getVisitId() {
-    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+    return GoRouterState.of(context).uri.queryParameters['visitId'] ?? '';
   }
 
   @override
@@ -57,7 +56,7 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
       return;
     }
 
-    final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+    final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
     final visit = visitResult.valueOrNull;
     if (visit == null) {
       setState(() {
@@ -93,10 +92,18 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
     }
 
     final vitals = VitalSigns(
-      tempC: vitalsMap?['tempC'] is num ? (vitalsMap['tempC'] as num).toDouble() : null,
-      heartRate: vitalsMap?['heartRate'] is int ? vitalsMap['heartRate'] : null,
-      weightKg: vitalsMap?['weightKg'] is num ? (vitalsMap['weightKg'] as num).toDouble() : null,
-      flags: vitalsMap?['flags'] is List ? List<String>.from(vitalsMap['flags']) : null,
+      tempC: vitalsMap != null && vitalsMap['tempC'] is num
+          ? (vitalsMap['tempC'] as num).toDouble()
+          : null,
+      heartRate: vitalsMap != null && vitalsMap['heartRate'] is int
+          ? vitalsMap['heartRate'] as int
+          : null,
+      weightKg: vitalsMap != null && vitalsMap['weightKg'] is num
+          ? (vitalsMap['weightKg'] as num).toDouble()
+          : null,
+      flags: vitalsMap != null && vitalsMap['flags'] is List
+          ? List<String>.from(vitalsMap['flags'])
+          : null,
     );
 
     final species = 'perro'; // TODO: obtener de la mascota asociada
@@ -187,18 +194,17 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: triageLevelColor(suggestedLevel.value.toString())
-                  .withValues(alpha: 0.1),
+              color: triageLevelColor(suggestedLevel.name).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: triageLevelColor(suggestedLevel.value.toString()),
+                color: triageLevelColor(suggestedLevel.name),
                 width: 2,
               ),
             ),
             child: Column(
               children: [
                 TriageLevelIndicator(
-                  level: suggestedLevel.value.toString(),
+                  level: suggestedLevel.name,
                   size: 80,
                 ),
                 const SizedBox(height: 16),
@@ -207,7 +213,7 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: triageLevelColor(suggestedLevel.value.toString()),
+                    color: triageLevelColor(suggestedLevel.name),
                   ),
                 ),
                 const SizedBox(height: 8),

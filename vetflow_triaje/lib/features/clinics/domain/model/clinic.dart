@@ -44,7 +44,8 @@ class Clinic {
     final close = dayHours['close'] as String?;
     if (open == null || close == null) return false;
     final nowStr = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-    return nowStr >= open && nowStr <= close;
+    // Comparación lexicográfica funciona para formato HH:mm
+    return nowStr.compareTo(open) >= 0 && nowStr.compareTo(close) <= 0;
   }
 
   String _dayKey(DateTime date) {

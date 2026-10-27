@@ -3,7 +3,6 @@ library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
-import 'package:vetflow_triaje/features/queue/domain/model/queue_status.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 
 class QueueMapper {
@@ -29,7 +28,7 @@ class QueueMapper {
       assignedRoom: data['assignedRoom'] as String?,
       assignedVeterinarian: data['assignedVeterinarian'] as String?,
       position: data['position'] as int?,
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
     );
   }

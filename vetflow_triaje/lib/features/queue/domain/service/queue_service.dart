@@ -5,6 +5,7 @@
 library;
 
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 
 class QueueService {
   const QueueService();
@@ -14,7 +15,13 @@ class QueueService {
     final sorted = List<QueueEntry>.from(entries);
     sorted.sort((a, b) {
       // Mayor nivel de triaje primero (más grave = primero).
-      final levelComparison = b.triageLevel.value.compareTo(a.triageLevel.value);
+      int levelValue(TriageLevel l) {
+        if (l == TriageLevel.emergencia) return 3;
+        if (l == TriageLevel.urgencia) return 2;
+        if (l == TriageLevel.consulta) return 1;
+        return 0;
+      }
+      final levelComparison = levelValue(b.triageLevel).compareTo(levelValue(a.triageLevel));
       if (levelComparison != 0) return levelComparison;
       // Mismo nivel: más antiguo primero.
       return a.createdAt.compareTo(b.createdAt);

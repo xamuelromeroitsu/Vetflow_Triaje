@@ -5,13 +5,12 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/symptom_entry.dart';
-import 'package:vetflow_triaje/features/triage/domain/model/symptom_rule.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -93,10 +92,11 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
   bool _isLoading = false;
 
   late final UpdateVisit _updateVisit =
-      main.appDependencies.visitModule.updateVisit;
+      appDependencies.visitModule.updateVisit;
 
   String _getVisitId() {
-    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+    final state = GoRouterState.of(context);
+    return state.uri.queryParameters['visitId'] ?? '';
   }
 
   void _toggleSymptom(String category, String item) {
@@ -126,7 +126,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
 
     final visitId = _getVisitId();
     if (visitId.isNotEmpty) {
-      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
       final visit = visitResult.valueOrNull;
       if (visit != null) {
         final updated = Visit(
@@ -198,20 +198,16 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                       children: items.map((item) {
                         final isSelected = _isSymptomSelected(category, item);
                         final level = _symptomLevels[item] ?? TriageLevel.consulta;
+                        final levelColor = triageLevelColor(level.name);
                         return FilterChip(
                           label: Text(item),
                           selected: isSelected,
                           onSelected: (_) => _toggleSymptom(category, item),
                           backgroundColor: kSurfaceColor,
-                          selectedColor: triageLevelColor(level.value.toString())
-                              .withValues(alpha: 0.2),
-                          checkmarkColor: triageLevelColor(
-                            level.value.toString(),
-                          ),
+                          selectedColor: levelColor.withValues(alpha: 0.2),
+                          checkmarkColor: levelColor,
                           labelStyle: TextStyle(
-                            color: isSelected
-                                ? triageLevelColor(level.value.toString())
-                                : kTextPrimaryColor,
+                            color: isSelected ? levelColor : kTextPrimaryColor,
                             fontWeight: isSelected
                                 ? FontWeight.w600
                                 : FontWeight.w400,
@@ -219,9 +215,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide(
-                              color: isSelected
-                                  ? triageLevelColor(level.value.toString())
-                                  : const Color(0xFFE5E7EB),
+                              color: isSelected ? levelColor : const Color(0xFFE5E7EB),
                             ),
                           ),
                         );
@@ -271,7 +265,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
             text: _selectedSymptoms.isEmpty
                 ? 'Selecciona al menos un síntoma'
                 : 'Continuar',
-            onPressed: _selectedSymptoms.isEmpty ? null : _continue,
+            onPressed: _selectedSymptoms.isEmpty ? null : () => _continue(),
           ),
           const SizedBox(height: 20),
         ],

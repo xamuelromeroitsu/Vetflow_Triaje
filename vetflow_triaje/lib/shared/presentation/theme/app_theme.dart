@@ -116,7 +116,7 @@ ThemeData get appTheme {
         borderSide: const BorderSide(color: kErrorColor),
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 0,
       color: kSurfaceColor,
       shape: RoundedRectangleBorder(

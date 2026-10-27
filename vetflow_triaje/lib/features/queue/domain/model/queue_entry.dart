@@ -1,3 +1,10 @@
+/// Entrada de la cola de atención.
+///
+/// Ordenada por nivel de triaje (mayor gravedad primero) y fecha de creación.
+library;
+
+import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
+
 /// Estado de una entrada de la cola de atención.
 enum QueueStatus {
   pendiente,
@@ -21,13 +28,6 @@ extension QueueStatusX on QueueStatus {
         QueueStatus.cancelado => 'Cancelado',
       };
 }
-
-/// Entrada de la cola de atención.
-///
-/// Ordenada por nivel de triaje (mayor gravedad primero) y fecha de creación.
-library;
-
-import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 
 class QueueEntry {
   const QueueEntry({

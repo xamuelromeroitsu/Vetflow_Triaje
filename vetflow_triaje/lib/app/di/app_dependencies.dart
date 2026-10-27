@@ -27,12 +27,15 @@ class AppDependencies {
     required this.petPhotoStorage,
   });
 
-  factory AppDependencies.create({FirebaseFirestore? firestore}) {
+  factory AppDependencies.create({
+    FirebaseFirestore? firestore,
+    bool demoMode = true,
+  }) {
     return AppDependencies(
-      authModule: AuthModule.create(firestore: firestore),
+      authModule: AuthModule.create(firestore: firestore, demoMode: demoMode),
       clinicModule: ClinicModule.create(firestore: firestore),
-      ownerModule: OwnerModule.create(firestore: firestore),
-      petModule: PetModule.create(firestore: firestore),
+      ownerModule: OwnerModule.create(firestore: firestore, demoMode: demoMode),
+      petModule: PetModule.create(firestore: firestore, demoMode: demoMode),
       visitModule: VisitModule.create(firestore: firestore),
       triageModule: TriageModule.create(
         symptomRules: const [],

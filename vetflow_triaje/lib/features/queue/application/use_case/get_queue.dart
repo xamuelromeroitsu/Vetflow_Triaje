@@ -4,6 +4,7 @@ library;
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
 import 'package:vetflow_triaje/features/queue/domain/port/queue_repository.dart';
 import 'package:vetflow_triaje/features/queue/domain/service/queue_service.dart';
+import 'package:vetflow_triaje/shared/domain/errors.dart';
 import 'package:vetflow_triaje/shared/domain/result.dart';
 
 class GetQueue {
@@ -23,7 +24,7 @@ class GetQueue {
     if (entries == null) {
       return Result.failure(
         result.errorOrNull ??
-            const Exception('No se pudo obtener la cola'),
+            const DomainError(message: 'No se pudo obtener la cola'),
       );
     }
 

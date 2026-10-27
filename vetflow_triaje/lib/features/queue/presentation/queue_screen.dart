@@ -7,12 +7,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/queue/application/use_case/watch_queue.dart';
 import 'package:vetflow_triaje/features/queue/domain/model/queue_entry.dart';
-import 'package:vetflow_triaje/features/queue/domain/model/queue_status.dart';
-import 'package:vetflow_triaje/features/queue/domain/service/queue_service.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -25,7 +24,7 @@ class QueueScreen extends StatefulWidget {
 
 class _QueueScreenState extends State<QueueScreen> {
   late final WatchQueue _watchQueue =
-      main.appDependencies.queueModule.watchQueue;
+      appDependencies.queueModule.watchQueue;
 
   @override
   Widget build(BuildContext context) {
@@ -251,13 +250,13 @@ class _QueueEntryCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: triageLevelColor(entry.triageLevel.value)
+          backgroundColor: triageLevelColor(entry.triageLevel.name)
               .withValues(alpha: 0.1),
           child: Text(
             position.toString(),
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: triageLevelColor(entry.triageLevel.value),
+              color: triageLevelColor(entry.triageLevel.name),
               fontSize: 14,
             ),
           ),
@@ -276,9 +275,9 @@ class _QueueEntryCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  triageLevelIcon(entry.triageLevel.value),
+                  triageLevelIcon(entry.triageLevel.name),
                   size: 14,
-                  color: triageLevelColor(entry.triageLevel.value),
+                  color: triageLevelColor(entry.triageLevel.name),
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -286,7 +285,7 @@ class _QueueEntryCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: triageLevelColor(entry.triageLevel.value),
+                    color: triageLevelColor(entry.triageLevel.name),
                   ),
                 ),
                 const SizedBox(width: 12),

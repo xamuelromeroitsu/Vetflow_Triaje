@@ -81,7 +81,7 @@ Result<Owner> validateOwner({
       id: '',
       name: trimmedName,
       phone: trimmedPhone,
-      email: email?.trim().isNotEmpty == true ? email.trim() : null,
+      email: (email != null && email.trim().isNotEmpty) ? email.trim() : null,
       ownerId: ownerId,
     ),
   );

@@ -6,10 +6,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/vital_signs.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -28,10 +29,11 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
   bool _hasMissingVitals = false;
 
   late final UpdateVisit _updateVisit =
-      main.appDependencies.visitModule.updateVisit;
+      appDependencies.visitModule.updateVisit;
 
   String _getVisitId() {
-    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+    final state = GoRouterState.of(context);
+    return state.uri.queryParameters['visitId'] ?? '';
   }
 
   @override
@@ -52,7 +54,7 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
 
     final visitId = _getVisitId();
     if (visitId.isNotEmpty) {
-      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
       final visit = visitResult.valueOrNull;
       if (visit != null) {
         final vitals = _getVitals();
@@ -197,7 +199,7 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
 
             PrimaryButton(
               text: 'Continuar',
-              onPressed: _isLoading ? null : _continue,
+              onPressed: _isLoading ? null : () => _continue(),
             ),
             const SizedBox(height: 20),
           ],

@@ -9,10 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vetflow_triaje/features/auth/application/use_case/register_with_email.dart';
 import 'package:vetflow_triaje/features/auth/application/use_case/sign_in_with_email.dart';
 import 'package:vetflow_triaje/features/auth/application/use_case/sign_out.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/auth/firebase_auth_repository.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/profile/firestore_user_profile_repository.dart';
+import 'package:vetflow_triaje/features/auth/domain/model/auth_account.dart';
 import 'package:vetflow_triaje/features/auth/domain/port/auth_repository.dart';
 import 'package:vetflow_triaje/features/auth/domain/port/user_profile_repository.dart';
+import 'package:vetflow_triaje/infrastructure/demo/demo_repositories.dart';
+import 'package:vetflow_triaje/infrastructure/firebase/auth/firebase_auth_repository.dart';
+import 'package:vetflow_triaje/infrastructure/firebase/profile/firestore_user_profile_repository.dart';
 
 class AuthModule {
   const AuthModule({
@@ -26,9 +28,14 @@ class AuthModule {
   factory AuthModule.create({
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
+    bool demoMode = true,
   }) {
-    final authRepository = AuthRepositoryFirebase(auth: auth);
-    final profileRepository = UserProfileRepositoryFirestore(firestore: firestore);
+    final authRepository = demoMode
+        ? DemoAuthRepository()
+        : AuthRepositoryFirebase(auth: auth);
+    final profileRepository = demoMode
+        ? DemoUserProfileRepository()
+        : UserProfileRepositoryFirestore(firestore: firestore);
 
     return AuthModule(
       registerWithEmail: RegisterWithEmail(
@@ -52,11 +59,6 @@ class AuthModule {
   final AuthRepository authRepository;
 
   /// Emite la cuenta de auth actual (o null si no hay sesión).
-  Stream<AuthAccount?> get authStateChanges => authRepository.authStateChanges;
-}
-
-  final RegisterWithEmail registerWithEmail;
-  final SignInWithEmail signInWithEmail;
-  final SignOut signOut;
-  final UserProfileRepository profileRepository;
+  Stream<AuthAccount?> get authStateChanges =>
+      authRepository.authStateChanges();
 }

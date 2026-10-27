@@ -24,7 +24,6 @@ class WelcomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Cabecera con logo y estado "Red Activa"
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -53,8 +52,6 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Hero con imagen de mascota
               ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: Container(
@@ -106,8 +103,6 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Texto descriptivo
               const Text(
                 'Atención médica y triaje rápido para tu mascota',
                 style: TextStyle(
@@ -129,8 +124,6 @@ class WelcomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-
-              // Indicador de paginación
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -163,32 +156,24 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 40),
-
-              // Botón principal: Iniciar Sesión
               PrimaryButton(
                 text: 'Iniciar Sesión',
                 onPressed: () => context.go('/login'),
                 icon: Icons.login,
               ),
               const SizedBox(height: 16),
-
-              // Botón secundario: Crear cuenta
               SecondaryButton(
                 text: 'Crear Cuenta / Registrarse',
                 onPressed: () => context.go('/register'),
                 icon: Icons.person_add,
               ),
               const SizedBox(height: 16),
-
-              // Opción de invitado
               TextButtonLink(
                 text: 'Continuar como invitado / Ver clínicas cercanas',
                 onPressed: () => context.go('/pets'),
                 icon: Icons.map_outlined,
               ),
               const SizedBox(height: 32),
-
-              // Botón de emergencia
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
@@ -240,7 +225,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );

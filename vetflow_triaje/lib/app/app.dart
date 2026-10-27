@@ -6,7 +6,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:vetflow_triaje/app/router/app_router.dart';
-import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
+import 'package:vetflow_triaje/shared/presentation/theme/app_theme_clinical_mint.dart';
 
 class VetFlowApp extends StatelessWidget {
   const VetFlowApp({super.key});
@@ -15,7 +15,7 @@ class VetFlowApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'VetFlow Triaje',
-      theme: appTheme,
+      theme: clinicalMintTheme,
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );

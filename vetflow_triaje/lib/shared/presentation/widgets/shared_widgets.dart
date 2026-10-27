@@ -9,12 +9,12 @@ class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     this.icon,
   });
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final IconData? icon;
 
   @override
@@ -36,12 +36,12 @@ class SecondaryButton extends StatelessWidget {
   const SecondaryButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     this.icon,
   });
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final IconData? icon;
 
   @override
@@ -63,17 +63,20 @@ class TextButtonLink extends StatelessWidget {
   const TextButtonLink({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
+    this.icon,
   });
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
+    return TextButton.icon(
       onPressed: onPressed,
-      child: Text(
+      icon: icon != null ? Icon(icon, size: 18) : const SizedBox.shrink(),
+      label: Text(
         text,
         style: const TextStyle(
           fontSize: 14,
@@ -143,6 +146,7 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.validator,
     this.prefixIcon,
+    this.maxLines,
   });
 
   final String label;
@@ -152,6 +156,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final String? Function(String?)? validator;
   final IconData? prefixIcon;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +177,7 @@ class AppTextField extends StatelessWidget {
           keyboardType: keyboardType,
           obscureText: obscureText,
           validator: validator,
+          maxLines: maxLines ?? 1,
           style: const TextStyle(color: kTextPrimaryColor),
           decoration: InputDecoration(
             hintText: hint,
@@ -234,13 +240,15 @@ class AppDropdownField<T> extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.hint,
+    this.validator,
   });
 
   final String label;
   final T? value;
   final List<DropdownMenuItem<T>> items;
-    final ValueChanged<T?> onChanged;
+  final ValueChanged<T?> onChanged;
   final String? hint;
+  final String? Function(T?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +268,7 @@ class AppDropdownField<T> extends StatelessWidget {
           value: value,
           items: items,
           onChanged: onChanged,
+          validator: validator,
           hint: hint != null ? Text(hint!) : null,
           decoration: InputDecoration(
             filled: true,

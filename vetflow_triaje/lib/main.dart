@@ -6,7 +6,7 @@ import 'firebase_options.dart';
 import 'app/app.dart';
 import 'app/di/app_dependencies.dart';
 
-final AppDependencies appDependencies = AppDependencies.create();
+final AppDependencies appDependencies = AppDependencies.create(demoMode: true);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,10 +23,8 @@ Future<void> main() async {
 
     // Persistencia offline de Firestore: permite capturar mascotas,
     // síntomas y signos vitales sin conexión y reenviar al volver.
-    await FirebaseFirestore.instance.setSettings(
-      const Settings(
-        persistenceEnabled: true,
-      ),
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
     );
   } catch (error) {
     debugPrint(

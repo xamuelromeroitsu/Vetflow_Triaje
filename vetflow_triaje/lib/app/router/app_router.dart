@@ -16,9 +16,13 @@
 library;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vetflow_triaje/features/auth/presentation/login_screen.dart';
 import 'package:vetflow_triaje/features/auth/presentation/register_screen.dart';
+import 'package:vetflow_triaje/features/auth/presentation/screens/login_screen_clinical_mint.dart';
+import 'package:vetflow_triaje/features/auth/presentation/screens/onboarding_welcome_clinical_mint.dart';
 import 'package:vetflow_triaje/features/onboarding/presentation/welcome_screen.dart';
 import 'package:vetflow_triaje/features/pets/presentation/pet_list_screen.dart';
 import 'package:vetflow_triaje/features/pets/presentation/pet_register_screen.dart';
@@ -30,10 +34,19 @@ import 'package:vetflow_triaje/features/triage/presentation/vet_confirmation_scr
 import 'package:vetflow_triaje/features/triage/presentation/vital_signs_screen.dart';
 
 /// Redirige según el estado de autenticación.
+///
+/// Si la app se ejecuta sin Firebase inicializado (modo local/demo), se evita
+/// acceder a FirebaseAuth para no romper el arranque y mostrar la pantalla de
+/// onboarding en su lugar.
 String? _authRedirect(BuildContext context, GoRouterState state) {
+  if (Firebase.apps.isEmpty) {
+    return null;
+  }
+
   final isLoggedIn = FirebaseAuth.instance.currentUser != null;
-  final loggingIn = state.location == '/login';
-  final registering = state.location == '/register';
+  final location = state.matchedLocation;
+  final loggingIn = location == '/login';
+  final registering = location == '/register';
 
   if (!isLoggedIn) {
     if (!loggingIn && !registering) return '/login';
@@ -52,13 +65,13 @@ final GoRouter appRouter = GoRouter(
     // Pantalla de bienvenida / onboarding
     GoRoute(
       path: '/',
-      builder: (context, state) => const WelcomeScreen(),
+      builder: (context, state) => const OnboardingWelcomeClinicalMintScreen(),
     ),
 
     // Autenticación
     GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const LoginScreenClinicalMint(),
     ),
     GoRoute(
       path: '/register',

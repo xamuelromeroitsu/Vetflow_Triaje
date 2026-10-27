@@ -29,7 +29,7 @@ class FirestoreClinicRepository implements ClinicRepository {
           ?.cast<String>()
           .toList() ??
           [],
-      hours: (data['hours'] as Map?) ?? {},
+      hours: (data['hours'] as Map<String, dynamic>?) ?? <String, dynamic>{},
       emergency24h: data['emergency24h'] as bool? ?? false,
       services: (data['services'] as List<dynamic>?)
           ?.cast<String>()

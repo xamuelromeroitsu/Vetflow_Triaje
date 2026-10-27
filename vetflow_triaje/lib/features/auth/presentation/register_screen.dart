@@ -5,8 +5,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/auth/application/use_case/register_with_email.dart';
+import 'package:vetflow_triaje/features/owners/application/use_case/register_owner.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -28,9 +30,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _errorMessage;
 
   late final RegisterWithEmail _registerWithEmail =
-      main.appDependencies.authModule.registerWithEmail;
+      appDependencies.authModule.registerWithEmail;
   late final RegisterOwner _registerOwner =
-      main.appDependencies.ownerModule.registerOwner;
+      appDependencies.ownerModule.registerOwner;
 
   @override
   void dispose() {
@@ -169,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         if (value == null || value.isEmpty) {
                           return 'El email es obligatorio';
                         }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                        if (!RegExp(r'^[\w.-]+@([\w-]+\.)+[\w-]{2,}$')
                             .hasMatch(value)) {
                           return 'Ingresa un email válido';
                         }
@@ -266,7 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );

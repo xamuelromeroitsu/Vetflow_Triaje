@@ -33,11 +33,6 @@ class TriageEngine {
   final String rulesVersion;
 
   /// Evalúa el triaje a partir de los datos capturados.
-  ///
-    [pet] puede ser null si no se conoce aún la mascota.
-    [redFlags] son las respuestas a preguntas de descarte (clave = id de regla, valor = true/false/null).
-    [symptoms] son los síntomas ingresados por el usuario.
-    [vitals] son los signos vitales (pueden tener campos nulos).
   TriageResult evaluate({
     required Map<String, bool?> redFlags,
     required List<SymptomEntry> symptoms,
@@ -71,33 +66,36 @@ class TriageEngine {
         reasons.add(
           'Respuesta "no sé" en descarte: ${rule.question}',
         );
-        level = TriageLevel.max(level, TriageLevel.urgencia);
+        level = TriageLevelX.max(level, TriageLevel.urgencia);
         pendingValidation.add('respuesta_incompleta_descarte_${rule.id}');
       }
     }
 
     // Paso 2: Nivel por síntomas (tomar el más alto).
     for (final symptom in symptoms) {
-      final matchingRules = symptomRules.where(
-        (r) => r.category == symptom.category &&
-            r.item == symptom.item &&
-            r.appliesToSpecies(species),
-      );
-      if (matchingRules.isEmpty) {
-        // Síntoma sin regla reconocida para esta especie → mínimo Urgencia.
-        reasons.add(
-          'Síntoma sin regla para especie "${species ?? 'desconocida'}": '
-          '${symptom.item} → mínimo ${TriageLevel.urgencia.label}',
+      final items = symptom.items;
+      for (final item in items) {
+        final matchingRules = symptomRules.where(
+          (r) => r.category == symptom.category &&
+              r.item == item &&
+              r.appliesToSpecies(species),
         );
-        level = TriageLevel.max(level, TriageLevel.urgencia);
-        pendingValidation.add('sin_regla_${symptom.category}_${symptom.item}');
-        continue;
-      }
-      for (final rule in matchingRules) {
-        reasons.add(
-          '${rule.category} - ${rule.item}: ${rule.level.label}',
-        );
-        level = TriageLevel.max(level, rule.level);
+        if (matchingRules.isEmpty) {
+          // Síntoma sin regla reconocida para esta especie → mínimo Urgencia.
+          reasons.add(
+            'Síntoma sin regla para especie "${species ?? 'desconocida'}": '
+            '$item → mínimo ${TriageLevel.urgencia.label}',
+          );
+          level = TriageLevelX.max(level, TriageLevel.urgencia);
+          pendingValidation.add('sin_regla_${symptom.category}_$item');
+          continue;
+        }
+        for (final rule in matchingRules) {
+          reasons.add(
+            '${rule.category} - ${rule.item}: ${rule.level.label}',
+          );
+          level = TriageLevelX.max(level, rule.level);
+        }
       }
     }
 
@@ -105,7 +103,9 @@ class TriageEngine {
     final vitalAdjustment = _adjustByVitals(vitals, species);
     if (vitalAdjustment != null) {
       reasons.addAll(vitalAdjustment.reasons);
-      level = TriageLevel.max(level, vitalAdjustment.level);
+      if (vitalAdjustment.level != null) {
+        level = TriageLevelX.max(level, vitalAdjustment.level!);
+      }
       if (vitalAdjustment.pendingValidation != null) {
         pendingValidation.addAll(vitalAdjustment.pendingValidation!);
       }
@@ -116,7 +116,7 @@ class TriageEngine {
       reasons.add(
         'Faltan signos vitales obligatorios → mínimo ${TriageLevel.urgencia.label}',
       );
-      level = TriageLevel.max(level, TriageLevel.urgencia);
+      level = TriageLevelX.max(level, TriageLevel.urgencia);
     }
 
     return TriageResult(
@@ -131,8 +131,8 @@ class TriageEngine {
 
   /// Ajuste por signos vitales según el perfil clínico de la especie.
   ///
-    El nivel solo puede subir. Si la especie está pendingVet, no se ajusta
-    y se anota para revisión veterinaria.
+  /// El nivel solo puede subir. Si la especie está pendingVet, no se ajusta
+  /// y se anota para revisión veterinaria.
   _VitalAdjustment? _adjustByVitals(VitalSigns vitals, String? species) {
     final profile = speciesProfiles.firstWhere(
       (p) => p.species == species?.toLowerCase(),
@@ -167,7 +167,7 @@ class TriageEngine {
           'Temperatura ${temp}°C fuera de rango '
           '(${profile.tempMinC}–${profile.tempMaxC}°C) → subir nivel',
         );
-        adjustment = TriageLevel.max(adjustment, TriageLevel.urgencia);
+        adjustment = TriageLevelX.max(adjustment, TriageLevel.urgencia);
         hasChange = true;
       }
     }
@@ -181,7 +181,7 @@ class TriageEngine {
           'Frecuencia cardíaca ${hr} lpm fuera de rango '
           '(${profile.heartRateMin}–${profile.heartRateMax} lpm) → subir nivel',
         );
-        adjustment = TriageLevel.max(adjustment, TriageLevel.urgencia);
+        adjustment = TriageLevelX.max(adjustment, TriageLevel.urgencia);
         hasChange = true;
       }
     }

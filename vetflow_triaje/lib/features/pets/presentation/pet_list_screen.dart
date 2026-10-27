@@ -5,10 +5,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/features/pets/application/use_case/get_pets_by_owner.dart';
 import 'package:vetflow_triaje/features/pets/domain/model/pet.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/create_visit.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -25,9 +26,9 @@ class _PetListScreenState extends State<PetListScreen> {
   String? _errorMessage;
 
   late final GetPetsByOwner _getPetsByOwner =
-      main.appDependencies.petModule.getPetsByOwner;
+      appDependencies.petModule.getPetsByOwner;
   late final CreateVisit _createVisit =
-      main.appDependencies.visitModule.createVisit;
+      appDependencies.visitModule.createVisit;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _PetListScreenState extends State<PetListScreen> {
   }
 
   Future<void> _loadPets() async {
-    final account = main.appDependencies.authModule.authRepository.currentAccount;
+    final account = appDependencies.authModule.authRepository.currentAccount;
     final ownerId = account?.uid;
     if (ownerId == null || ownerId.isEmpty) return;
 

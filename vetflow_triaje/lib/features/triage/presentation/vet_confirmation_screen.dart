@@ -6,12 +6,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/app/di/app_dependencies.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/update_visit.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
-import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
 import 'package:vetflow_triaje/features/triage/domain/model/visit.dart';
 import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
@@ -30,10 +29,10 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
   bool _isLoading = false;
 
   late final UpdateVisit _updateVisit =
-      main.appDependencies.visitModule.updateVisit;
+      appDependencies.visitModule.updateVisit;
 
   String _getVisitId() {
-    return GoRouter.of(context).state.queryParams['visitId'] ?? '';
+    return GoRouterState.of(context).uri.queryParameters['visitId'] ?? '';
   }
 
   @override
@@ -46,7 +45,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
     final visitId = _getVisitId();
     if (visitId.isEmpty) return;
 
-    final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+    final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
     final visit = visitResult.valueOrNull;
     if (visit == null) return;
 
@@ -75,7 +74,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
 
     final visitId = _getVisitId();
     if (visitId.isNotEmpty) {
-      final visitResult = await main.appDependencies.visitModule.visitRepository.findById(visitId);
+      final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
       final visit = visitResult.valueOrNull;
       if (visit != null) {
         final updated = Visit(
@@ -147,7 +146,6 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -176,7 +174,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                   Row(
                     children: [
                       TriageLevelIndicator(
-                        level: _suggested!.value.toString(),
+                        level: _suggested!.name,
                         size: 56,
                       ),
                       const SizedBox(width: 16),
@@ -185,12 +183,12 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${_suggested!.label}',
+                              _suggested!.label,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: triageLevelColor(
-                                  _suggested!.value.toString(),
+                                  _suggested!.name,
                                 ),
                               ),
                             ),
@@ -232,7 +230,6 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
             const Text(
               'Nivel confirmado (veterinario)',
               style: TextStyle(
@@ -242,8 +239,8 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            ...TriageLevel.values.map((level) {
-              return Padding(
+            for (final level in TriageLevel.values)
+              Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: GestureDetector(
                   onTap: () => setState(() => _confirmed = level),
@@ -252,13 +249,12 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: _confirmed == level
-                          ? triageLevelColor(level.value.toString())
-                              .withValues(alpha: 0.15)
+                          ? triageLevelColor(level.name).withValues(alpha: 0.15)
                           : kSurfaceColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: _confirmed == level
-                            ? triageLevelColor(level.value.toString())
+                            ? triageLevelColor(level.name)
                             : const Color(0xFFE5E7EB),
                         width: 1,
                       ),
@@ -270,11 +266,11 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                           height: 20,
                           decoration: BoxDecoration(
                             color: _confirmed == level
-                                ? triageLevelColor(level.value.toString())
+                                ? triageLevelColor(level.name)
                                 : Colors.transparent,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: triageLevelColor(level.value.toString()),
+                              color: triageLevelColor(level.name),
                             ),
                           ),
                           child: _confirmed == level
@@ -293,11 +289,9 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                               Row(
                                 children: [
                                   Icon(
-                                    triageLevelIcon(level.value.toString()),
+                                    triageLevelIcon(level.name),
                                     size: 16,
-                                    color: triageLevelColor(
-                                      level.value.toString(),
-                                    ),
+                                    color: triageLevelColor(level.name),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
@@ -305,9 +299,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
-                                      color: triageLevelColor(
-                                        level.value.toString(),
-                                      ),
+                                      color: triageLevelColor(level.name),
                                     ),
                                   ),
                                 ],
@@ -326,11 +318,9 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                       ],
                     ),
                   ),
-                );
-              }).toList(),
-            ),
+                ),
+              ),
             const SizedBox(height: 24),
-
             if (_confirmed != null && _confirmed!.value < _suggested!.value)
               Container(
                 padding: const EdgeInsets.all(16),
@@ -345,8 +335,7 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Advertencia: el nivel confirmado es inferior al '
-                        'sugerido. Esto no se recomienda por seguridad.',
+                        'Advertencia: el nivel confirmado es inferior al sugerido. Esto no se recomienda por seguridad.',
                         style: TextStyle(
                           fontSize: 12,
                           color: kErrorColor,
@@ -357,10 +346,9 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
                 ),
               ),
             const SizedBox(height: 32),
-
             PrimaryButton(
               text: 'Guardar confirmación',
-              onPressed: _confirmed == null || _isLoading ? null : _confirm,
+              onPressed: _confirmed == null || _isLoading ? null : () => _confirm(),
             ),
             const SizedBox(height: 16),
             SecondaryButton(
