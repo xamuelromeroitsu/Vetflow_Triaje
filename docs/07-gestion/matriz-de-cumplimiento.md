@@ -11,7 +11,7 @@
 | 3 | Solo datos necesarios | 📱 Sí | Cada campo se justifica con el triaje; pedir lo demás después o no pedirlo | MVP | `privacy-and-consent` |
 | 4 | Formularios accesibles por teclado | 📱🌐 Sí | Orden de foco, teclado por campo, "Siguiente/Enviar", etiquetas | MVP | `accessibility-wcag` |
 | 5 | Política de cookies | 🌐 Solo web | La app no usa cookies de navegador; el portal web sí necesitará banner y política | 2+ | `privacy-and-consent` |
-| 6 | Integraciones de terceros | 📱🌐 Sí | Firebase desde el inicio; mapas y analítica después; todo en [registro-de-terceros.md](registro-de-terceros.md) | MVP / 3 | `privacy-and-consent` |
+| 6 | Integraciones de terceros | 📱🌐 Sí | Supabase desde el inicio; mapas y analítica después; todo en [registro-de-terceros.md](registro-de-terceros.md) | MVP / 3 | `privacy-and-consent` |
 | 7 | Eliminar reseñas falsas | 📱🌐 Cuando existan reseñas | Directorio de clínicas (EPC-05): reseña solo con visita real, moderación, denuncias | 3 | `legal-content-review` |
 | 8 | Política de reembolso | 📱🌐 Solo si hay pagos | No aplica al MVP; definir si hay citas pagadas o suscripción | 2–4 | `legal-content-review` |
 | 9 | Leyes locales | 📱🌐 Sí | Depende del país; listar y revisar con un profesional | Antes del piloto | `legal-content-review` |
@@ -32,7 +32,7 @@
 2. **Datos mínimos** y política de privacidad antes de usar datos reales.
 3. **Consentimientos separados**, sin casillas premarcadas y sin bloquear nunca la emergencia.
 4. **Accesibilidad básica** (contraste, etiquetas, teclado) desde la primera pantalla.
-5. **Registro de terceros** (al menos Firebase) completado.
+5. **Registro de terceros** (Supabase) completado antes del piloto.
 
 ## Lo que puede esperar
 Cookies y su banner (portal web) · reseñas (directorio) · reembolsos (pagos) · analítica.

@@ -2,7 +2,7 @@
 ///
 /// Muestra los casos ordenados por prioridad de triaje, con asignación
 /// de sala y veterinario, y opción de llamada de emergencia.
-/// La cola se observa en tiempo real desde Firestore.
+/// La cola se observa en tiempo real desde Supabase Realtime.
 library;
 
 import 'package:flutter/material.dart';
@@ -23,8 +23,7 @@ class QueueScreen extends StatefulWidget {
 }
 
 class _QueueScreenState extends State<QueueScreen> {
-  late final WatchQueue _watchQueue =
-      appDependencies.queueModule.watchQueue;
+  late final WatchQueue _watchQueue = appDependencies.queueModule.watchQueue;
 
   @override
   Widget build(BuildContext context) {
@@ -137,8 +136,7 @@ class _QueueScreenState extends State<QueueScreen> {
                     ? EmptyState(
                         icon: Icons.queue,
                         title: 'Cola vacía',
-                        subtitle:
-                            'No hay casos pendientes en este momento.',
+                        subtitle: 'No hay casos pendientes en este momento.',
                         buttonText: 'Nuevo triaje',
                         onButtonPressed: () => context.go('/pets'),
                       )
@@ -211,10 +209,7 @@ class _ClinicChip extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '$distance • ${isOpen ? 'Abierto 24h' : 'Cerrado'}',
-            style: const TextStyle(
-              fontSize: 12,
-              color: kTextSecondaryColor,
-            ),
+            style: const TextStyle(fontSize: 12, color: kTextSecondaryColor),
           ),
         ],
       ),
@@ -223,10 +218,7 @@ class _ClinicChip extends StatelessWidget {
 }
 
 class _QueueEntryCard extends StatelessWidget {
-  const _QueueEntryCard({
-    required this.entry,
-    required this.position,
-  });
+  const _QueueEntryCard({required this.entry, required this.position});
 
   final QueueEntry entry;
   final int position;
@@ -250,8 +242,9 @@ class _QueueEntryCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: triageLevelColor(entry.triageLevel.name)
-              .withValues(alpha: 0.1),
+          backgroundColor: triageLevelColor(
+            entry.triageLevel.name,
+          ).withValues(alpha: 0.1),
           child: Text(
             position.toString(),
             style: TextStyle(
@@ -290,7 +283,10 @@ class _QueueEntryCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: _statusColor(entry.status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
@@ -319,9 +315,7 @@ class _QueueEntryCard extends StatelessWidget {
         trailing: entry.status == QueueStatus.pendiente
             ? const Icon(Icons.chevron_right, color: kTextSecondaryColor)
             : null,
-        onTap: entry.status == QueueStatus.pendiente
-            ? () {}
-            : null,
+        onTap: entry.status == QueueStatus.pendiente ? () {} : null,
       ),
     );
   }

@@ -1,4 +1,4 @@
-/// Perfil de usuario en Firestore (users/{uid}).
+/// Perfil de usuario ligado a la cuenta autenticada.
 ///
 /// Aquí vive el rol. El auto-registro solo puede crear `dueno`; el personal
 /// se dará de alta por invitación en Fase 2 (docs/08-admin/sistema-admin.md),

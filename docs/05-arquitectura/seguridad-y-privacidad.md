@@ -7,21 +7,22 @@
 | Datos clínicos de la mascota | Sensible | Acceso restringido |
 | Fotos | Sensible | Pueden mostrar personas o ubicaciones |
 
-## Reglas de acceso (Firestore)
+## Controles de acceso (Supabase)
 | Rol | Acceso |
 |---|---|
 | Dueño | Solo sus `owners`, `pets` y `visits` |
-| Recepción / veterinario | `visits` de su clínica |
-| Administrador | Lo anterior + `staff` de su clínica |
+| Recepción / veterinario | `visits` de su clínica y mascotas asociadas |
+| Administrador | Permisos por definir para gestión de personal |
 
-El rol del usuario se guarda en `users/{uid}` (campo `role`) y lo leen las
-reglas; el cliente no puede cambiarse el rol. El auto-registro solo crea
-`dueno`; el personal se da de alta por invitación en Fase 2.
+El rol se guarda en `public.user_profiles` y las políticas RLS lo consultan.
+El auto-registro solo crea `dueno`; el personal se da de alta por invitación.
+El cliente no debe cambiar su rol, `owner_id` ni `company_id`.
 
 ## Medidas
 - Autenticación obligatoria para escribir.
-- Validación de tipos y rangos en reglas de Firestore.
-- Storage: solo JPG/PNG, máximo 5 MB, ruta por usuario.
+- Validación de tipos y rangos en constraints SQL, RLS y políticas de Storage.
+- Storage: bucket privado `pet-photos`, JPG/PNG, máximo 5 MB y ruta por
+  mascota.
 - No guardar datos innecesarios del dueño.
 - Aviso de privacidad claro en el primer uso.
 - El dueño puede pedir borrar sus datos (definir proceso).
@@ -33,3 +34,5 @@ Un error de triaje es un riesgo de seguridad. Mitigación: [protocolo](../03-tri
 - Normativa de protección de datos del país objetivo (consultar con un profesional).
 - Tiempo de conservación de fotos y visitas.
 - Registro de accesos del personal.
+- Revisar/validar políticas y triggers de la migración SQL con el equipo antes
+  de aplicar a producción.

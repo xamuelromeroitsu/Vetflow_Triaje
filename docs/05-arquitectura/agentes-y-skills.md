@@ -2,6 +2,11 @@
 
 Todo vive en la carpeta `.claude/` en la raíz del repo, junto con `CLAUDE.md`. Los agentes y skills son herramientas para **Claude Code**; no afectan al código de la app.
 
+> **Backend actual:** VetFlow migró a Supabase. Los nombres `firebase-architect`
+> y `firebase-backend` de las tablas siguientes son referencias heredadas; no
+> deben usarse para configurar el backend actual. No hay un agente/skill
+> específico de Supabase registrado en este repo.
+
 ```
 .claude/
 ├── agents/          ← agentes (cada uno es un .md con un rol)
@@ -53,7 +58,8 @@ CLAUDE.md            ← reglas que Claude Code lee siempre
 ## Skills de terceros que mencionaste
 Los nombres `improve-codebase-architecture`, `ui-taste`, `design-mobile-apps`, `vercel-react-best-practices`, `diagnosing-bugs` y `code-review` son skills de otras fuentes: no están incluidas aquí y no conozco su contenido exacto.
 - Si las instalas desde su fuente, revisa su `SKILL.md` antes de usarlas.
-- Las skills de este repo cubren las mismas necesidades pero ajustadas a VetFlow (Flutter, Firebase, triaje, privacidad).
+- Las skills de este repo cubren las necesidades de VetFlow (Flutter, Supabase,
+  triaje y privacidad); `firebase-backend` queda como referencia histórica.
 - `vercel-react-best-practices` solo tendrá sentido si construyes un portal web en React/Next.js (Fase 2–4); no hace falta antes.
 
 ## Mantenimiento

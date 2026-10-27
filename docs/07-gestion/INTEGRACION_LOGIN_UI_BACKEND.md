@@ -3,7 +3,9 @@
 Fecha: $(date -Iseconds)
 
 ## Objetivo
-Adaptar las pantallas del módulo de login/onboarding extraídas de Stitch (design "Clinical Mint") a Flutter + Dart, modularizarlas siguiendo la arquitectura del proyecto (features/auth, shared/theme, app/router) e integrarlas con el backend Firebase/Auth + DI existente.
+Adaptar las pantallas del módulo de login/onboarding extraídas de Stitch (design "Clinical Mint") a Flutter + Dart, modularizarlas siguiendo la arquitectura del proyecto (features/auth, shared/theme, app/router) e integrarlas con el backend Supabase Auth + DI existente.
+
+> **Estado actual:** la integración usa Supabase. Esta guía conserva las decisiones de UI originales; para configurar Auth, Postgres, Storage y el proyecto remoto, consulta [la guía de migración](../../documentacion-migracion-supabase.md).
 
 ## Fuentes
 - Descargas: 
@@ -14,11 +16,11 @@ Adaptar las pantallas del módulo de login/onboarding extraídas de Stitch (desi
 
 ## Arquitectura del proyecto (base)
 - Clean Architecture por features: `lib/features/*/{domain,application,presentation}`
-- Infraestructura: `lib/infrastructure/firebase/*`
+- Infraestructura: `lib/infrastructure/supabase/*`
 - DI: `lib/app/di/*`, `AppDependencies` (`lib/app/di/app_dependencies.dart`)
 - Router: `lib/app/router/app_router.dart` (GoRouter)
-- Auth: `AuthRepository` (puerto) + `FirebaseAuthRepository` + `SignInWithEmail`, `RegisterWithEmail`, `SignOut`
-- UserProfile/Owner: `UserProfileRepositoryFirestore`, `RegisterOwner` 
+- Auth: `AuthRepository` (puerto) + `SupabaseAuthRepository` + `SignInWithEmail`, `RegisterWithEmail`, `SignOut`
+- UserProfile/Owner: `SupabaseUserProfileRepository`, `SupabaseOwnerRepository`, `RegisterOwner`
 - Tema existente: `lib/shared/presentation/theme/app_theme.dart`
 
 ## Cambios realizados
@@ -62,15 +64,15 @@ Adaptar las pantallas del módulo de login/onboarding extraídas de Stitch (desi
 
 ## Integración con backend (cómo se conecta)
 - DI: `main.appDependencies.authModule.signInWithEmail` usado directamente (patrón ya existente en `login_screen.dart`)
-- Flujo auth: `SignInWithEmail` llama a `AuthRepository` (Firebase) y opcionalmente valida perfil vía `UserProfileRepository` según implementación
-- Post-login: redirección a `/pets` (igual que lógica anterior). Redirect global en router sigue activo basado en `FirebaseAuth.instance.currentUser`
+- Flujo auth: `SignInWithEmail` llama a `AuthRepository` (Supabase) y valida perfil vía `UserProfileRepository`
+- Post-login: redirección a `/pets`. El router consulta la sesión actual de Supabase Auth
 - Registro: `/register` sigue usando `RegisterScreen` existente (con `RegisterWithEmail` + `RegisterOwner`)
 
 ## Recursos/tecnologías usadas
 - **Flutter** (Material 3) - UI
 - **Dart** - lógica
 - **go_router** `^14.2.0` - navegación
-- **firebase_core/auth/firestore/storage** - backend existente
+- **supabase_flutter** - Auth, PostgreSQL, Realtime y Storage
 - **Google Fonts Inter** (referenciado en diseños; tema usa familia Inter)
 - **Material Symbols Outlined** (estilo de iconos en mockups)
 - **Unsplash** - placeholders de imágenes (reemplazar por assets locales)
@@ -85,7 +87,7 @@ Adaptar las pantallas del módulo de login/onboarding extraídas de Stitch (desi
 ## Notas de implementación
 - Las pantallas nuevas son **UI-first** pero conectadas a casos de uso reales (`SignInWithEmail`)
 - Validaciones mantienen lógica existente (email regex, password >=6)
-- El switch "Dueño/Personal" cambia copy/placeholder; lógica de roles se maneja en backend (Firestore `users/{uid}`)
+- El switch "Dueño/Personal" cambia copy/placeholder; lógica de roles se maneja en `user_profiles` y sus políticas RLS
 - Emergencia banner es UI (llamar número pendiente de integrar con `url_launcher` si se desea)
 
 ## Próximos pasos sugeridos

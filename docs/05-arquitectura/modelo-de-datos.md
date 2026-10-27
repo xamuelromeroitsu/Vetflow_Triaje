@@ -1,26 +1,31 @@
-# Modelo de datos (Firestore)
+# Modelo de datos (Supabase/Postgres)
 
 ## Estructura
 ```
-/owners/{ownerId}
-/pets/{petId}
-/visits/{visitId}
-/users/{uid}                     perfil y rol del usuario autenticado
-/companies/{companyId}          (Fase 4)
-   └─ /staff/{staffId}
+public.owners
+public.pets
+public.visits
+public.user_profiles             perfil ligado a auth.users
+public.clinics                   clínicas (EPC-06)
 ```
+
+El esquema implementado está en
+[`vetflow_triaje/supabase/migrations/20261027000000_initial_schema.sql`](../../vetflow_triaje/supabase/migrations/20261027000000_initial_schema.sql).
+Postgres usa `snake_case`; los modelos Dart mantienen los nombres del dominio.
 
 ## owners
 | Campo | Tipo | Notas |
 |---|---|---|
+| id | text | Identificador; coincide con el uid en el MVP |
+| owner_id | uuid | Usuario propietario (`auth.users.id`) |
 | name | string | |
 | phone | string | Identificador posible |
 | email | string | |
-| createdAt | timestamp | |
+| created_at / updated_at | timestamptz | |
 
-## users
-Perfil del usuario autenticado (Firebase Auth). Aquí vive el **rol**; las
-reglas de Firestore lo leen y el auto-registro solo puede crear `dueno`.
+## user_profiles
+Perfil del usuario autenticado (Supabase Auth). Aquí vive el **rol**; las
+políticas RLS lo leen y el auto-registro solo puede crear `dueno`.
 El `personal` (recepción, veterinario, administrador) se dará de alta por
 invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
 
@@ -28,15 +33,17 @@ invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
 |---|---|---|
 | email | string | Email de la cuenta |
 | role | string | `dueno` · `personal` |
-| ownerId | string/null | Documento de dueño asociado |
-| companyId | string/null | Clínica (personal, Fase 4) |
-| createdAt | timestamp | |
+| id | uuid | Igual a `auth.users.id` |
+| owner_id | uuid/null | Usuario dueño asociado |
+| company_id | text/null | Clínica (personal, Fase 4) |
+| created_at | timestamptz | |
 
 
 ## pets
 | Campo | Tipo | Notas |
 |---|---|---|
-| ownerId | string | |
+| id | text | Generado por Postgres |
+| owner_id | uuid | Usuario dueño (`auth.users.id`) |
 | name | string | Obligatorio |
 | species | string | 7 especies del MVP, sin acento: `perro`, `gato`, `huron`, `conejo`, `ave`, `roedor`, `reptil` (ADR-0005) |
 | breed | string | Obligatorio |
@@ -49,15 +56,17 @@ invitación en Fase 2 (ver `docs/08-admin/sistema-admin.md`).
 ## visits
 | Campo | Tipo | Notas |
 |---|---|---|
-| petId | string | |
-| companyId | string/null | Null en MVP |
-| redFlags | map | Respuestas de descarte |
-| symptoms | map | category, items, notes, since |
-| vitals | map | tempC, weightKg, heartRate, flags |
-| photos | array<string> | Rutas en Storage |
-| triage | map | suggested, confirmed, reasons, rulesVersion |
+| id | text | Generado por Postgres |
+| pet_id | text | Mascota |
+| owner_id | uuid | Usuario dueño |
+| company_id | text/null | Clínica (null antes de asignar) |
+| red_flags | jsonb | Respuestas de descarte |
+| symptoms | jsonb | category, items, notes, since |
+| vitals | jsonb | tempC, weightKg, heartRate, flags |
+| photos | text[] | Rutas en Storage |
+| triage | jsonb | suggested, confirmed, reasons, rulesVersion |
 | status | string | `pendiente`, `en_atencion`, `atendido` |
-| createdAt / updatedAt | timestamp | |
+| created_at / updated_at | timestamptz | |
 
 ```json
 {
@@ -86,7 +95,7 @@ Directorio de clínicas veterinarias (EPC-06).
 | hours | map | Horario de atención por día de la semana |
 | emergency24h | bool | Atiende urgencias 24 horas |
 | services | array<string> | Servicios (hospitalización, laboratorio, imágenes, urgencias) |
-| createdAt / updatedAt | timestamp | |
+| created_at / updated_at | timestamptz | |
 
 ## appointments
 

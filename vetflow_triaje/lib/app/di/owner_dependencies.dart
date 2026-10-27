@@ -1,23 +1,19 @@
 /// Módulo de inyección de dependencias para dueños.
 library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vetflow_triaje/features/owners/application/use_case/register_owner.dart';
 import 'package:vetflow_triaje/features/owners/application/use_case/update_owner.dart';
-import 'package:vetflow_triaje/features/owners/domain/port/owner_repository.dart';
 import 'package:vetflow_triaje/infrastructure/demo/demo_repositories.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/owners/firestore_owner_repository.dart';
+import 'package:vetflow_triaje/infrastructure/supabase/supabase_repositories.dart';
 
 class OwnerModule {
   const OwnerModule({required this.registerOwner, required this.updateOwner});
 
-  factory OwnerModule.create({
-    FirebaseFirestore? firestore,
-    bool demoMode = true,
-  }) {
+  factory OwnerModule.create({SupabaseClient? client, bool demoMode = true}) {
     final ownerRepository = demoMode
         ? DemoOwnerRepository()
-        : FirestoreOwnerRepository(firestore: firestore);
+        : SupabaseOwnerRepository(client: client);
     return OwnerModule(
       registerOwner: RegisterOwner(ownerRepository: ownerRepository),
       updateOwner: UpdateOwner(ownerRepository: ownerRepository),

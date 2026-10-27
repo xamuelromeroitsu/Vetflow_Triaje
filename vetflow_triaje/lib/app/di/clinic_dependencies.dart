@@ -1,10 +1,10 @@
 /// Módulo de inyección de dependencias para clínicas.
 library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vetflow_triaje/features/clinics/application/use_case/list_clinics.dart';
 import 'package:vetflow_triaje/features/clinics/domain/port/clinic_repository.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/clinics/firestore_clinic_repository.dart';
+import 'package:vetflow_triaje/infrastructure/supabase/supabase_repositories.dart';
 
 class ClinicModule {
   const ClinicModule({
@@ -12,8 +12,8 @@ class ClinicModule {
     required this.clinicRepository,
   });
 
-  factory ClinicModule.create({FirebaseFirestore? firestore}) {
-    final clinicRepository = FirestoreClinicRepository(firestore: firestore);
+  factory ClinicModule.create({SupabaseClient? client}) {
+    final clinicRepository = SupabaseClinicRepository(client: client);
     return ClinicModule(
       listClinics: ListClinics(clinicRepository: clinicRepository),
       clinicRepository: clinicRepository,

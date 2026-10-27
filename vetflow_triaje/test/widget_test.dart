@@ -8,10 +8,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vetflow_triaje/app/app.dart';
+import 'package:vetflow_triaje/app/router/app_router.dart';
 
 void main() {
   testWidgets('smoke test renders app shell', (WidgetTester tester) async {
-    await tester.pumpWidget(const VetFlowApp());
+    final router = createAppRouter(hasSession: () => false);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(VetFlowApp(router: router));
 
     expect(find.byType(MaterialApp), findsOneWidget);
     expect(

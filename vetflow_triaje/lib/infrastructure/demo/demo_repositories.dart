@@ -1,7 +1,7 @@
-/// Repositorios locales para pruebas del flujo sin Firebase.
+/// Repositorios locales para pruebas del flujo sin backend remoto.
 ///
 /// Mantienen el comportamiento principal del dominio para que la UI pueda
-/// revisarse sin depender de creds reales ni de Firestore.
+/// revisarse sin depender de credenciales reales ni de servicios remotos.
 library;
 
 import 'package:vetflow_triaje/features/auth/domain/model/auth_account.dart';

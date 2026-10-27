@@ -1,16 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/app/supabase_initializer.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/login_screen_clinical_mint.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/onboarding_welcome_clinical_mint.dart';
-import 'package:vetflow_triaje/firebase_options.dart';
+import 'package:vetflow_triaje/main.dart' as app_entry;
 import 'package:vetflow_triaje/shared/presentation/theme/app_theme_clinical_mint.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await initializeSupabase();
+  app_entry.appDependencies = AppDependencies.create(demoMode: false);
   runApp(const MinApp());
 }
 
@@ -23,7 +23,8 @@ class MinApp extends StatelessWidget {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const OnboardingWelcomeClinicalMintScreen(),
+          builder: (context, state) =>
+              const OnboardingWelcomeClinicalMintScreen(),
         ),
         GoRoute(
           path: '/login',
@@ -32,9 +33,7 @@ class MinApp extends StatelessWidget {
         GoRoute(
           path: '/pets',
           builder: (context, state) => const Scaffold(
-            body: Center(
-              child: Text('Autenticado - Pets (min)'),
-            ),
+            body: Center(child: Text('Autenticado - Pets (min)')),
           ),
         ),
       ],

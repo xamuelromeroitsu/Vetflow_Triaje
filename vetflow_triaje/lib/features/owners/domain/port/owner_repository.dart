@@ -1,7 +1,7 @@
 /// Puerto (interfaz) del repositorio de dueños.
 ///
 /// El dominio define el contrato; los adaptadores de infraestructura
-/// (Firestore, en pruebas, etc.) lo implementan.
+/// (Supabase, dobles de prueba, etc.) lo implementan.
 library;
 
 import 'package:vetflow_triaje/shared/domain/result.dart';

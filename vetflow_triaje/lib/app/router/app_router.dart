@@ -15,10 +15,9 @@
 ///  - /emergency     : Llamada de emergencia directa
 library;
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vetflow_triaje/features/auth/presentation/register_screen.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/login_screen_clinical_mint.dart';
@@ -34,26 +33,18 @@ import 'package:vetflow_triaje/features/triage/presentation/vital_signs_screen.d
 
 /// Redirige según el estado de autenticación.
 ///
-/// Si la app se ejecuta sin Firebase inicializado (modo local/demo), se evita
-/// acceder a FirebaseAuth para no romper el arranque y mostrar la pantalla de
-/// onboarding en su lugar.
-String? _authRedirect(BuildContext context, GoRouterState state) {
-  if (Firebase.apps.isEmpty) {
-    return null;
-  }
-
-  final isLoggedIn = FirebaseAuth.instance.currentUser != null;
+/// La sesión se conserva en Supabase Auth entre reinicios de la app.
+String? _authRedirect(
+  BuildContext context,
+  GoRouterState state, {
+  required bool isLoggedIn,
+}) {
   final location = state.matchedLocation;
   final loggingIn = location == '/login';
   final registering = location == '/register';
 
   if (!isLoggedIn) {
-    const publicLocations = {
-      '/',
-      '/login',
-      '/register',
-      '/emergency',
-    };
+    const publicLocations = {'/', '/login', '/register', '/emergency'};
     if (!publicLocations.contains(location)) return '/login';
     return null;
   }
@@ -63,70 +54,74 @@ String? _authRedirect(BuildContext context, GoRouterState state) {
 }
 
 /// Configuración principal del router de la aplicación.
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
-  redirect: _authRedirect,
-  routes: [
-    // Pantalla de bienvenida / onboarding
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const DogoWelcomeScreen(),
-    ),
+GoRouter createAppRouter({required bool Function() hasSession}) {
+  return GoRouter(
+    initialLocation: '/',
+    redirect: (context, state) =>
+        _authRedirect(context, state, isLoggedIn: hasSession()),
+    routes: [
+      // Pantalla de bienvenida / onboarding
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const DogoWelcomeScreen(),
+      ),
 
-    // Autenticación
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreenClinicalMint(),
-    ),
-    GoRoute(
-      path: '/register',
-      builder: (context, state) => const RegisterScreen(),
-    ),
+      // Autenticación
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreenClinicalMint(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
 
-    // Mascotas
-    GoRoute(
-      path: '/pets',
-      builder: (context, state) => const PetListScreen(),
-    ),
-    GoRoute(
-      path: '/pets/register',
-      builder: (context, state) => const PetRegisterScreen(),
-    ),
+      // Mascotas
+      GoRoute(
+        path: '/pets',
+        builder: (context, state) => const PetListScreen(),
+      ),
+      GoRoute(
+        path: '/pets/register',
+        builder: (context, state) => const PetRegisterScreen(),
+      ),
 
-    // Triaje
-    GoRoute(
-      path: '/triage/symptoms',
-      builder: (context, state) => const SymptomsScreen(),
-    ),
-    GoRoute(
-      path: '/triage/red-flags',
-      builder: (context, state) => const RedFlagsScreen(),
-    ),
-    GoRoute(
-      path: '/triage/vitals',
-      builder: (context, state) => const VitalSignsScreen(),
-    ),
-    GoRoute(
-      path: '/triage/result',
-      builder: (context, state) => const TriageResultScreen(),
-    ),
-    GoRoute(
-      path: '/triage/vet-confirmation',
-      builder: (context, state) => const VetConfirmationScreen(),
-    ),
+      // Triaje
+      GoRoute(
+        path: '/triage/symptoms',
+        builder: (context, state) => const SymptomsScreen(),
+      ),
+      GoRoute(
+        path: '/triage/red-flags',
+        builder: (context, state) => const RedFlagsScreen(),
+      ),
+      GoRoute(
+        path: '/triage/vitals',
+        builder: (context, state) => const VitalSignsScreen(),
+      ),
+      GoRoute(
+        path: '/triage/result',
+        builder: (context, state) => const TriageResultScreen(),
+      ),
+      GoRoute(
+        path: '/triage/vet-confirmation',
+        builder: (context, state) => const VetConfirmationScreen(),
+      ),
 
-    // Cola / clínicas
-    GoRoute(
-      path: '/queue',
-      builder: (context, state) => const QueueScreen(),
-    ),
+      // Cola / clínicas
+      GoRoute(path: '/queue', builder: (context, state) => const QueueScreen()),
 
-    // Emergencia
-    GoRoute(
-      path: '/emergency',
-      builder: (context, state) => const EmergencyScreen(),
-    ),
-  ],
+      // Emergencia
+      GoRoute(
+        path: '/emergency',
+        builder: (context, state) => const EmergencyScreen(),
+      ),
+    ],
+  );
+}
+
+final GoRouter appRouter = createAppRouter(
+  hasSession: () => Supabase.instance.client.auth.currentSession != null,
 );
 
 /// Pantalla de llamada de emergencia directa.
@@ -161,10 +156,7 @@ class EmergencyScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'Línea directa veterinaria',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
             const SizedBox(height: 32),
             SizedBox(

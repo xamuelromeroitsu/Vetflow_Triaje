@@ -1,7 +1,7 @@
-/// Cuenta de Firebase Authentication, sin información de rol.
+/// Cuenta de autenticación, sin información de rol.
 ///
-/// El rol **nunca** viene de aquí: se lee del perfil en Firestore
-/// (users/{uid}) para que las reglas puedan confiar en él.
+/// El rol **nunca** viene de aquí: se lee del perfil persistido para que RLS
+/// pueda confiar en él.
 library;
 
 class AuthAccount {

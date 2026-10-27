@@ -11,7 +11,7 @@ lib/
 ├── app/             LA APLICACIÓN   → las conexiones (arranque + inyección)
 ├── features/        LOS DOMINIOS    → la lógica de negocio (el hexágono)
 ├── shared/          el kernel común → primitivas de dominio
-└── infrastructure/  LA INFRAESTRUCTURA → todo lo externo (Firebase, widgets)
+└── infrastructure/  LA INFRAESTRUCTURA → todo lo externo (Supabase, widgets)
 ```
 
 ## 1 · `app/` — la aplicación (las conexiones)
@@ -19,7 +19,8 @@ lib/
 - `app.dart`: widget raíz.
 - `di/`: **único sitio que conoce las dos mitades**: crea los adaptadores de
   `infrastructure/` y los inyecta en los puertos del dominio.
-- Si cambias Firebase por otro backend, solo se toca esta carpeta.
+- Los adaptadores de backend viven en `infrastructure/`; el dominio depende
+  únicamente de sus puertos.
 
 ## 2 · `features/` — los dominios (la lógica de negocio)
 
@@ -28,7 +29,7 @@ depende de los demás slices.
 
 ```
 features/<dominio>/
-├── domain/            EL HEXÁGONO: no importa Flutter ni Firebase
+├── domain/            EL HEXÁGONO: no importa Flutter ni el backend
 │   ├── model/         entidades y value objects (AppUser, UserProfile…)
 │   ├── validation/    reglas puras (email válido, contraseña mínima…)
 │   ├── service/       domain services (el motor de triaje vivirá aquí)
@@ -38,8 +39,8 @@ features/<dominio>/
 ```
 
 Estado actual: `auth/`, `owners/`, `pets/`, `triage/`, `queue/` y `clinics/`
-tienen carpeta e implementación propia. `infrastructure/firebase/` contiene
-los adaptadores de Firestore y Storage para esos dominios. La UI está conectada
+tienen carpeta e implementación propia. `infrastructure/supabase/` contiene
+adaptadores de Auth, Postgres y Storage para esos dominios. La UI está conectada
 a los casos de uso de autenticación, mascotas, visitas, triaje, cola y clínicas.
 
 ## 3 · `infrastructure/` — lo externo al negocio
@@ -48,15 +49,10 @@ Implementa los puertos del dominio y recibe las interacciones del usuario:
 
 ```
 infrastructure/
-├── firebase/          adaptadores de salida (driven adapters)
-│   ├── auth/          Firebase Auth → implementa el puerto AuthRepository
-│   ├── owners/        Firestore owners/{ownerId} → FirestoreOwnerRepository
-│   ├── pets/          Firestore pets/{petId} → FirestorePetRepository
-│   ├── profile/       Firestore users/{uid} → UserProfileRepository + mapper
-│   ├── visits/        Firestore visits/{visitId} → FirestoreVisitRepository
-│   ├── queue/         Firestore visits/{visitId} → FirestoreQueueRepository
-│   ├── clinics/       Firestore clinics/{clinicId} → FirestoreClinicRepository
-│   └── storage/       Firebase Storage → PetPhotoStorage
+├── supabase/          adaptadores de salida (driven adapters)
+│   ├── Auth → AuthRepository
+│   ├── Postgres → repositorios de perfiles, dueños, mascotas, visitas, cola y clínicas
+│   └── Storage → almacenamiento privado de fotos
 └── presentation/      pantallas y widgets (infrastructure/presentation/)
 ```
 
@@ -71,7 +67,7 @@ app  ──conoce──▶  features  ◀──implementa──  infrastructure
 - Nada de `features/` ni `shared/` apunta hacia `infrastructure/` o `app/`.
 - Los **puertos** (`domain/port/`) apuntan siempre hacia afuera; los
   **adaptadores** (`infrastructure/`) apuntan hacia dentro. Por eso el dominio
-  se puede probar con dobles en memoria, sin Firebase ni emulador.
+  se puede probar con dobles en memoria, sin servicios remotos.
 
 ## Traducción de conceptos
 
@@ -80,17 +76,17 @@ app  ──conoce──▶  features  ◀──implementa──  infrastructure
 | Hexágono / dominio | `features/<dominio>/domain/` |
 | Puerto (out-port) | `features/<dominio>/domain/port/` |
 | Caso de uso (in-port) | `features/<dominio>/application/use_case/` |
-| Adaptador driven | `infrastructure/firebase/<dominio>/` |
+| Adaptador driven | `infrastructure/supabase/` |
 | Adaptador driving | `infrastructure/presentation/` (futuro) |
-| Mapper | `user_profile_mapper.dart` (Firestore ↔ entidad) |
+| Mapper | mappers internos (Postgres ↔ entidad) |
 | Composition root | `app/di/` |
 
 ## Ejemplo: registro de un dueño
 
 1. La pantalla (futura, `infrastructure/presentation/`) llama al caso de uso.
 2. `application/use_case/RegisterWithEmail` valida y orquesta.
-3. Pide al **puerto** `AuthRepository` crear la cuenta (no sabe que es Firebase).
+3. Pide al **puerto** `AuthRepository` crear la cuenta (no conoce el proveedor).
 4. Pide al **puerto** `UserProfileRepository` guardar el perfil con rol.
-5. `infrastructure/firebase/` es quien realmente habla con Firebase.
+5. `infrastructure/supabase/` es quien realmente habla con Supabase.
 
-Por eso `flutter test` corre con dobles y pasa sin configuración de Firebase.
+Por eso `flutter test` corre con dobles y pasa sin configuración de Supabase.

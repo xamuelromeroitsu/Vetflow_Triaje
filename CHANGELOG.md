@@ -6,6 +6,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 ### Añadido
 - Estructura inicial de documentación (producto, requisitos, triaje clínico, diseño, arquitectura, calidad, gestión).
 
+### Cambiado
+- Migrado el backend Flutter de Firebase a Supabase Auth, PostgreSQL con RLS y
+  Supabase Storage; se añadió la migración SQL inicial y la carga de `.env`.
+- Retiradas las dependencias y configuraciones de Firebase del proyecto móvil.
+
 ## [0.1.0] - 2026-10-23
 ### Añadido
 - Épicas EPC-06 (Directorio y geolocalización de clínicas), EPC-07 (Gestión de citas y consultas programadas) y EPC-08 (Carnet de salud digital y perfil) con sus criterios de aceptación.

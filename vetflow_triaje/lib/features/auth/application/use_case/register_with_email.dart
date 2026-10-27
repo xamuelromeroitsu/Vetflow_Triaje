@@ -1,7 +1,7 @@
 /// Caso de uso: registro con email y contraseña.
 ///
-/// Crea la cuenta en Firebase Auth y, solo si eso funciona, el perfil en
-/// Firestore con rol `dueno`. El rol no se acepta como parámetro: el
+/// Crea la cuenta de autenticación y, solo si eso funciona, el perfil con rol
+/// `dueno`. El rol no se acepta como parámetro: el
 /// auto-registro nunca puede crear personal.
 library;
 
@@ -69,10 +69,10 @@ class RegisterWithEmail {
   }
 
   AppUser _appUser(UserProfile profile) => AppUser(
-        uid: profile.uid,
-        email: profile.email,
-        role: profile.role,
-        ownerId: profile.ownerId,
-        companyId: profile.companyId,
-      );
+    uid: profile.uid,
+    email: profile.email,
+    role: profile.role,
+    ownerId: profile.ownerId,
+    companyId: profile.companyId,
+  );
 }

@@ -14,7 +14,7 @@ pregunta distinta.
 
 | Estructura | Pregunta que responde | En una frase |
 |---|---|---|
-| Hexagonal (puertos y adaptadores) | ¿Cómo protejo el dominio del exterior? | El dominio no sabe que existe Firebase. |
+| Hexagonal (puertos y adaptadores) | ¿Cómo protejo el dominio del exterior? | El dominio no sabe que existe Supabase. |
 | DDD (táctico) | ¿Cómo modelo el dominio por dentro? | Agregados, value objects y eventos donde el dominio es complejo. |
 | Clean Architecture | ¿Hacia dónde apuntan las dependencias? | Siempre hacia el dominio, nunca hacia fuera. |
 | Vertical Slicing | ¿Cómo organizo el código por dominio? | Un slice completo por dominio, no capas técnicas globales. |
@@ -43,7 +43,7 @@ dominio lo merece (el triaje sí; un CRUD de mascotas, no).
 ### 2.1 · Hexagonal (Ports & Adapters) — proteger el dominio
 
 El dominio (las reglas) vive en el centro y **no sabe nada** de Flutter ni de
-Firebase. Todo lo externo entra y sale por **puertos** (interfaces) que los
+Supabase. Todo lo externo entra y sale por **puertos** (interfaces) que los
 **adaptadores** implementan.
 
 | Pieza hexagonal | Dónde vive hoy (ejemplo de `auth`) |
@@ -51,14 +51,14 @@ Firebase. Todo lo externo entra y sale por **puertos** (interfaces) que los
 | Puerto (out-port) | `features/auth/domain/port/auth_repository.dart` |
 | Puerto (out-port) | `features/auth/domain/port/user_profile_repository.dart` |
 | Caso de uso (in-port) | `features/auth/application/use_case/sign_in_with_email.dart` |
-| Adaptador driven | `infrastructure/firebase/auth/firebase_auth_repository.dart` |
-| Adaptador driven | `infrastructure/firebase/profile/firestore_user_profile_repository.dart` |
+| Adaptador driven | `infrastructure/supabase/supabase_repositories.dart` (Auth) |
+| Adaptador driven | `infrastructure/supabase/supabase_repositories.dart` (perfiles) |
 | Composition root | `app/di/auth_dependencies.dart` |
 | Adaptador driving (UI) | *previsto*: `infrastructure/presentation/` (llega con las pantallas) |
 
 **Por qué:** gracias a esto los 5 tests de `test/features/auth/` corren con
 dobles en memoria, sin emulador ni credenciales; y si algún día cambiamos
-Firebase por otro backend, solo se toca `app/di/` y los adaptadores.
+Supabase por otro backend, solo se toca `app/di/` y los adaptadores.
 
 ### 2.2 · Clean Architecture — la dirección de las flechas
 
@@ -118,12 +118,12 @@ donde el dominio es complejo (triage). Las reglas clínicas siguen siendo
 
 1. La pantalla (futura, `infrastructure/presentation/`) llama al caso de uso.
 2. `application/use_case/RegisterWithEmail` valida y orquesta.
-3. Pide al **puerto** `AuthRepository` crear la cuenta (no sabe que es Firebase).
+3. Pide al **puerto** `AuthRepository` crear la cuenta (no sabe que es Supabase).
 4. Pide al **puerto** `UserProfileRepository` guardar el perfil con rol.
-5. `infrastructure/firebase/` es quien realmente habla con Firebase.
+5. `infrastructure/supabase/` es quien realmente habla con Supabase.
 
 Lectura por capas: el **slicing** puso a `auth` en su propia carpeta; el
-**hexágono** aisló Firebase tras los puertos; **clean** obligó a que el dominio
+**hexágono** aisló Supabase tras los puertos; **clean** obligó a que el dominio
 no mire hacia fuera; y cuando el triaje entre, **DDD** modelará sus invariantes.
 
 ## 4 · Diferencias (errores comunes)
@@ -145,12 +145,12 @@ piezas que cruzan los bordes:
 |---|---|---|---|
 | 1 | Puertos transversales en `shared/` (`Clock`, `IdGenerator`, `Logger`) | Hoy el dominio usaría `DateTime.now()` / UUID directo → tests no deterministas, dependencia oculta | Pendiente |
 | 2 | Domain events + publisher | Un caso crítico detectado debe poder avisar al veterinario sin acoplar triage a notificaciones | Pendiente |
-| 3 | Traducción de errores infra → dominio | Si `FirebaseAuthException` se escapa al dominio, el puerto pierde sentido | Pendiente |
-| 4 | Contract tests | Los dobles prueban el dominio, pero nadie prueba que Firestore **cumple** el puerto | Pendiente |
+| 3 | Traducción de errores infra → dominio | Si una excepción de Supabase se escapa al dominio, el puerto pierde sentido | Pendiente |
+| 4 | Contract tests | Los dobles prueban el dominio, pero faltan pruebas de contrato para los adaptadores Supabase | Pendiente |
 | 5 | Anti-corruption layer / context map | El triaje necesitará datos del paciente; si importa directo de otro contexto, los bordes se filtran | Pendiente (con triage) |
 | 6 | Pipeline de aplicación | Validación, logging y transacciones se repetirían en cada caso de uso | Pendiente |
 | 7 | `app/config/` por entorno | dev / prod / emulador mezclados en el arranque | Pendiente |
-| 8 | Tests de `firestore.rules` | La doble validación (móvil + reglas) solo es real si las reglas se prueban | Pendiente |
+| 8 | Tests de políticas RLS y Storage | La doble validación (móvil + base de datos) solo es real si las políticas se prueban | Pendiente |
 | 9 | Driving adapter de entrada (UI) | El hexágono hoy solo tiene un lado; sin `presentation/` el in-port no se ejerce | **Roadmap** (la doc ya lo prevé) |
 | 10 | `shared/testing/` | Dobles reutilizables evitan reescribir `FakeClock` y repositorios en memoria en cada test | Pendiente |
 
@@ -166,7 +166,7 @@ estructura en vigor:
 lib/
 ├── app/
 │   ├── app.dart                     widget raíz (existe)
-│   ├── config/                      ← #7: entornos (dev/prod/emulador) + FirebaseOptions
+│   ├── config/                      ← #7: entornos (dev/prod) + configuración Supabase
 │   └── di/                          composition root + pipelines (#6, #7)
 ├── features/                        bounded contexts
 │   ├── auth/                        en vigor (referencia viva)
@@ -179,13 +179,13 @@ lib/
 │       ├── application/
 │       │   ├── use_case/            in-ports (existe)
 │       │   └── pipeline/            ← #6: decoradores transversales
-│       └── infrastructure/firestore/ ← adaptador driven + ACL (#5)
+│       └── infrastructure/supabase/ ← adaptador driven + ACL (#5)
 ├── shared/
 │   ├── domain/                      kernel común: Result, errores (existe)
 │   ├── port/                        ← #1: Clock, IdGenerator, Logger
 │   └── testing/                     ← #10: dobles reutilizables
 └── infrastructure/
-    ├── firebase/                    adaptadores driven (existe)
+    ├── supabase/                    adaptadores driven (existe)
     └── presentation/                ← #9: UI (adaptador driving)
 ```
 
@@ -194,7 +194,7 @@ lib/
 | Fase | Cuándo | Qué entra |
 |---|---|---|
 | A | Ya, con `auth` | #1 puertos transversales en `shared/port/` · #10 `shared/testing/` · #3 mapeo de errores infra → dominio · #4 contract test del adaptador contra el puerto |
-| B | Con `triage` | #2 domain events + publisher · modelo DDD táctico (aggregate, value objects, eventos) · #5 ACL / context map · #8 pruebas de `firestore.rules` |
+| B | Con `triage` | #2 domain events + publisher · modelo DDD táctico (aggregate, value objects, eventos) · #5 ACL / context map · #8 pruebas de RLS |
 | C | Con la UI | #6 pipeline de aplicación (decoradores) · #7 `app/config/` · adaptador driving en `infrastructure/presentation/` |
 
 Cada fase entra por su historia de usuario y su rama; no hay que parar la app
@@ -205,8 +205,8 @@ para hacerlo.
 | Término | Significado (con ejemplo en VetFlow) |
 |---|---|
 | **Puerto (port)** | Interfaz que el dominio *necesita* y define él mismo. `AuthRepository`. |
-| **Adaptador** | Implementación concreta de un puerto, con tecnología real. `FirebaseAuthRepository`. |
-| **Adaptador driven / driving** | Driven = hacia fuera (Firebase); driving = hacia dentro (la UI que invoca al caso de uso). |
+| **Adaptador** | Implementación concreta de un puerto, con tecnología real. `SupabaseAuthRepository`. |
+| **Adaptador driven / driving** | Driven = hacia fuera (Supabase); driving = hacia dentro (la UI que invoca al caso de uso). |
 | **In-port / out-port** | In-port = punto de entrada al dominio (caso de uso); out-port = punto de salida (repositorio). |
 | **Caso de uso (use case)** | Una operación del negocio orquestada: `RegisterWithEmail`. |
 | **Composition root** | Único sitio donde se conectan mitades: `app/di/`. |
@@ -223,7 +223,7 @@ para hacerlo.
 | **Domain service** | Lógica de dominio que no cabe en una entidad. El motor de reglas de triaje. |
 | **Anti-corruption layer (ACL)** | Traductor que evita que el modelo de otro contexto contamine el nuestro. |
 | **Context map** | Mapa de cómo se relacionan los bounded contexts (qué habla con quién). |
-| **Mapper** | Traduce entre formato externo y entidad. `UserProfileMapper` (Firestore ↔ entidad). |
+| **Mapper** | Traduce entre formato externo y entidad. `SupabaseUserProfileMapper` (Postgres ↔ entidad). |
 | **Doble / doble en memoria** | Implementación falsa de un puerto para tests. Los `FakeAuthRepository` de `test/`. |
 | **Contract test** | Prueba que verifica que un adaptador real cumple el contrato del puerto. |
 | **Pipeline / decorador** | Envoltura transversal de un caso de uso (validación, logging, transacción). |
@@ -234,7 +234,7 @@ para hacerlo.
 
 - [arquitectura-carpetas.md](arquitectura-carpetas.md) · estructura en vigor
 - [technical-spec.md](technical-spec.md) · stack y principios técnicos
-- [ADR-0001 · Flutter + Firebase](adr/0001-flutter-y-firebase.md)
+- [ADR-0001 · Flutter + Supabase](adr/0001-flutter-y-supabase.md)
 - [ADR-0003 · Triaje por reglas versionadas](adr/0003-triaje-por-reglas-versionadas.md)
 - [ADR-0006 · Cierre de brechas de arquitectura](adr/0006-cierre-de-brechas-arquitectura.md) (propuesta)
 - [protocolo-triaje.md](../03-triaje-clinico/protocolo-triaje.md) · reglas que el dominio debe respetar

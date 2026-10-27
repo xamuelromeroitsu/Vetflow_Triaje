@@ -13,15 +13,15 @@
 ## Fase 1 · MVP
 | Sprint | Pasos | Meta |
 |---|---|---|
-| 0 | Paso 0 | Proyecto Flutter + Firebase funcionando |
+| 0 | Paso 0 | Proyecto Flutter conectado a Supabase |
 | 1 | Pasos 1 y 2 | Registrar mascota y síntomas |
 | 2 | Pasos 3, 4 y 5 | Signos vitales, fotos y QA de captura |
 | 3 | Pasos 6 y 7 | Triaje y cola simple |
 
 | Paso | Objetivo | Tareas | Resultado visible |
 |---|---|---|---|
-| 0 | Repo y proyecto base | TAR-01, 02 | App conectada a Firebase |
-| 1 | Registrar mascota | TAR-03 a 06 | Formulario que guarda en Firestore |
+| 0 | Repo y proyecto base | TAR-01, 02 | App conectada a Supabase |
+| 1 | Registrar mascota | TAR-03 a 06 | Formulario que guarda en Postgres |
 | 2 | Registrar síntomas | TAR-07, 08 | Pantalla de síntomas |
 | 3 | Signos vitales | TAR-09 | Inputs con validación |
 | 4 | Fotos | TAR-10 | Subir y ver imágenes |

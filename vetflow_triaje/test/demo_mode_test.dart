@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 
 void main() {
   group('demo local mode', () {
     test(
-      'debe permitir autenticación y registro de mascota sin Firebase',
+      'debe permitir autenticación y registro de mascota sin backend remoto',
       () async {
         final deps = AppDependencies.create(demoMode: true);
 

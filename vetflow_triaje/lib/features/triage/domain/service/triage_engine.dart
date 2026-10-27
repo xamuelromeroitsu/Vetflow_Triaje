@@ -1,6 +1,6 @@
 /// Motor de reglas de triaje (domain service puro).
 ///
-/// No depende de Flutter, Firebase ni de la UI. Todo el cálculo es
+/// No depende de Flutter, servicios externos ni de la UI. Todo el cálculo es
 /// determinista y testeable con pruebas unitarias.
 ///
 /// Reglas del protocolo (borrador, pendiente validación veterinaria):
@@ -63,9 +63,7 @@ class TriageEngine {
       }
       if (answered == null) {
         // "No sé" en descarte → mínimo Urgencia (regla de seguridad).
-        reasons.add(
-          'Respuesta "no sé" en descarte: ${rule.question}',
-        );
+        reasons.add('Respuesta "no sé" en descarte: ${rule.question}');
         level = TriageLevelX.max(level, TriageLevel.urgencia);
         pendingValidation.add('respuesta_incompleta_descarte_${rule.id}');
       }
@@ -76,7 +74,8 @@ class TriageEngine {
       final items = symptom.items;
       for (final item in items) {
         final matchingRules = symptomRules.where(
-          (r) => r.category == symptom.category &&
+          (r) =>
+              r.category == symptom.category &&
               r.item == item &&
               r.appliesToSpecies(species),
         );
@@ -91,9 +90,7 @@ class TriageEngine {
           continue;
         }
         for (final rule in matchingRules) {
-          reasons.add(
-            '${rule.category} - ${rule.item}: ${rule.level.label}',
-          );
+          reasons.add('${rule.category} - ${rule.item}: ${rule.level.label}');
           level = TriageLevelX.max(level, rule.level);
         }
       }
@@ -148,7 +145,7 @@ class TriageEngine {
         level: null,
         reasons: [
           'Especie "${species ?? 'desconocida'}" sin rangos validados. '
-          'No se ajusta por signos vitales.',
+              'No se ajusta por signos vitales.',
         ],
         pendingValidation: ['rangi_vitales_${species ?? 'desconocida'}'],
       );
@@ -201,10 +198,7 @@ class TriageEngine {
 
     if (!hasChange) return null;
 
-    return _VitalAdjustment(
-      level: adjustment,
-      reasons: reasons,
-    );
+    return _VitalAdjustment(level: adjustment, reasons: reasons);
   }
 }
 

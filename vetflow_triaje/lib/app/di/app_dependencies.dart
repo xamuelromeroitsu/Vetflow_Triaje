@@ -5,7 +5,7 @@
 /// navegación se decidirán en el ADR-0004.
 library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vetflow_triaje/app/di/auth_dependencies.dart';
 import 'package:vetflow_triaje/app/di/clinic_dependencies.dart';
 import 'package:vetflow_triaje/app/di/owner_dependencies.dart';
@@ -13,7 +13,7 @@ import 'package:vetflow_triaje/app/di/pet_dependencies.dart';
 import 'package:vetflow_triaje/app/di/queue_dependencies.dart';
 import 'package:vetflow_triaje/app/di/triage_dependencies.dart';
 import 'package:vetflow_triaje/app/di/visit_dependencies.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/storage/pet_photo_storage.dart';
+import 'package:vetflow_triaje/infrastructure/supabase/supabase_repositories.dart';
 
 class AppDependencies {
   const AppDependencies({
@@ -28,23 +28,23 @@ class AppDependencies {
   });
 
   factory AppDependencies.create({
-    FirebaseFirestore? firestore,
-    bool demoMode = true,
+    SupabaseClient? client,
+    bool demoMode = false,
   }) {
     return AppDependencies(
-      authModule: AuthModule.create(firestore: firestore, demoMode: demoMode),
-      clinicModule: ClinicModule.create(firestore: firestore),
-      ownerModule: OwnerModule.create(firestore: firestore, demoMode: demoMode),
-      petModule: PetModule.create(firestore: firestore, demoMode: demoMode),
-      visitModule: VisitModule.create(firestore: firestore),
+      authModule: AuthModule.create(client: client, demoMode: demoMode),
+      clinicModule: ClinicModule.create(client: client),
+      ownerModule: OwnerModule.create(client: client, demoMode: demoMode),
+      petModule: PetModule.create(client: client, demoMode: demoMode),
+      visitModule: VisitModule.create(client: client),
       triageModule: TriageModule.create(
         symptomRules: const [],
         redFlagRules: const [],
         speciesProfiles: const [],
         rulesVersion: '0.2',
       ),
-      queueModule: QueueModule.create(firestore: firestore),
-      petPhotoStorage: PetPhotoStorage(),
+      queueModule: QueueModule.create(client: client),
+      petPhotoStorage: PetPhotoStorage(client: client),
     );
   }
 

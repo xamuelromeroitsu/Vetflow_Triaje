@@ -1,14 +1,13 @@
 /// Módulo de inyección de dependencias para cola.
 library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vetflow_triaje/features/queue/application/use_case/assign_room_veterinarian.dart';
 import 'package:vetflow_triaje/features/queue/application/use_case/get_queue.dart';
 import 'package:vetflow_triaje/features/queue/application/use_case/next_turn.dart';
 import 'package:vetflow_triaje/features/queue/application/use_case/watch_queue.dart';
-import 'package:vetflow_triaje/features/queue/domain/port/queue_repository.dart';
 import 'package:vetflow_triaje/features/queue/domain/service/queue_service.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/queue/firestore_queue_repository.dart';
+import 'package:vetflow_triaje/infrastructure/supabase/supabase_repositories.dart';
 
 class QueueModule {
   const QueueModule({
@@ -18,8 +17,8 @@ class QueueModule {
     required this.watchQueue,
   });
 
-  factory QueueModule.create({FirebaseFirestore? firestore}) {
-    final queueRepository = FirestoreQueueRepository(firestore: firestore);
+  factory QueueModule.create({SupabaseClient? client}) {
+    final queueRepository = SupabaseQueueRepository(client: client);
     final queueService = QueueService();
     return QueueModule(
       getQueue: GetQueue(
