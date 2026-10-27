@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vetflow_triaje/app/di/app_dependencies.dart';
+import 'package:vetflow_triaje/shared/domain/result.dart';
 
 void main() {
   group('demo local mode', () {

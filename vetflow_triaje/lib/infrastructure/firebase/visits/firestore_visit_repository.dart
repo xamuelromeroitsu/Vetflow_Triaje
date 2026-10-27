@@ -12,9 +12,12 @@ import 'package:vetflow_triaje/infrastructure/firebase/visits/visit_mapper.dart'
 
 class FirestoreVisitRepository implements VisitRepository {
   FirestoreVisitRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestoreOverride = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestoreOverride;
+
+  FirebaseFirestore get _firestore =>
+      _firestoreOverride ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _visits =>
       _firestore.collection('visits');

@@ -13,9 +13,12 @@ import 'package:vetflow_triaje/shared/domain/result.dart';
 
 class FirestoreQueueRepository implements QueueRepository {
   FirestoreQueueRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestoreOverride = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestoreOverride;
+
+  FirebaseFirestore get _firestore =>
+      _firestoreOverride ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _visits =>
       _firestore.collection('visits');
@@ -35,8 +38,7 @@ class FirestoreQueueRepository implements QueueRepository {
       assignedRoom: data['assignedRoom'] as String?,
       assignedVeterinarian: data['assignedVeterinarian'] as String?,
       position: data['position'] as int?,
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ??
-          DateTime.now(),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
@@ -130,11 +132,12 @@ class FirestoreQueueRepository implements QueueRepository {
   }
 
   @override
-  Future<Result<List<QueueEntry>>> getPendingQueue({
-    String? companyId,
-  }) async {
+  Future<Result<List<QueueEntry>>> getPendingQueue({String? companyId}) async {
     try {
-      var query = _visits.where('status', isEqualTo: QueueStatus.pendiente.value);
+      var query = _visits.where(
+        'status',
+        isEqualTo: QueueStatus.pendiente.value,
+      );
 
       if (companyId != null) {
         query = query.where('companyId', isEqualTo: companyId);
@@ -163,9 +166,7 @@ class FirestoreQueueRepository implements QueueRepository {
   }
 
   @override
-  Stream<Result<List<QueueEntry>>> watchPendingQueue({
-    String? companyId,
-  }) {
+  Stream<Result<List<QueueEntry>>> watchPendingQueue({String? companyId}) {
     var query = _visits.where('status', isEqualTo: QueueStatus.pendiente.value);
 
     if (companyId != null) {
@@ -237,23 +238,22 @@ class FirestoreQueueRepository implements QueueRepository {
     }
   }
 
-  String _generateId() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
+  String _generateId() => DateTime.now().millisecondsSinceEpoch.toString();
 }
 
 /// Extensión para permitir copiar una entrada con nuevo id.
 extension QueueEntryCopy on QueueEntry {
   QueueEntry copyWith({String? id}) => QueueEntry(
-        id: id ?? this.id,
-        visitId: visitId,
-        petId: petId,
-        ownerId: ownerId,
-        triageLevel: triageLevel,
-        status: status,
-        assignedRoom: assignedRoom,
-        assignedVeterinarian: assignedVeterinarian,
-        position: position,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+    id: id ?? this.id,
+    visitId: visitId,
+    petId: petId,
+    ownerId: ownerId,
+    triageLevel: triageLevel,
+    status: status,
+    assignedRoom: assignedRoom,
+    assignedVeterinarian: assignedVeterinarian,
+    position: position,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 }

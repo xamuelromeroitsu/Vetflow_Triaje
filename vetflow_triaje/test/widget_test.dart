@@ -14,5 +14,6 @@ void main() {
     await tester.pumpWidget(const VetFlowApp());
 
     expect(find.byType(MaterialApp), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

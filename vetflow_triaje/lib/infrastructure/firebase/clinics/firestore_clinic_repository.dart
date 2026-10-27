@@ -11,9 +11,12 @@ import 'package:vetflow_triaje/shared/domain/result.dart';
 
 class FirestoreClinicRepository implements ClinicRepository {
   FirestoreClinicRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestoreOverride = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _firestoreOverride;
+
+  FirebaseFirestore get _firestore =>
+      _firestoreOverride ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _clinics =>
       _firestore.collection('clinics');
@@ -25,15 +28,13 @@ class FirestoreClinicRepository implements ClinicRepository {
       address: data['address'] as String? ?? '',
       phone: data['phone'] as String? ?? '',
       email: data['email'] as String?,
-      specialties: (data['specialties'] as List<dynamic>?)
-          ?.cast<String>()
-          .toList() ??
+      specialties:
+          (data['specialties'] as List<dynamic>?)?.cast<String>().toList() ??
           [],
       hours: (data['hours'] as Map<String, dynamic>?) ?? <String, dynamic>{},
       emergency24h: data['emergency24h'] as bool? ?? false,
-      services: (data['services'] as List<dynamic>?)
-          ?.cast<String>()
-          .toList() ?? [],
+      services:
+          (data['services'] as List<dynamic>?)?.cast<String>().toList() ?? [],
       latitude: data['latitude'] is num
           ? (data['latitude'] as num).toDouble()
           : null,
@@ -48,7 +49,9 @@ class FirestoreClinicRepository implements ClinicRepository {
   @override
   Future<Result<Clinic>> create(Clinic clinic) async {
     try {
-      final docRef = _clinics.doc(clinic.id.isEmpty ? _generateId() : clinic.id);
+      final docRef = _clinics.doc(
+        clinic.id.isEmpty ? _generateId() : clinic.id,
+      );
       await docRef.set(_toMap(clinic));
       return Result.ok(clinic.copyWith(id: docRef.id));
     } on FirebaseException catch (error) {
@@ -115,7 +118,9 @@ class FirestoreClinicRepository implements ClinicRepository {
   }
 
   @override
-  Future<Result<List<Clinic>>> listBySpecialties(List<String> specialties) async {
+  Future<Result<List<Clinic>>> listBySpecialties(
+    List<String> specialties,
+  ) async {
     try {
       // Firestore array-contains filtra documentos que contengan al menos un valor del array.
       // Para múltiples especialidades, consultamos por cada una y combinamos resultados.
@@ -148,9 +153,7 @@ class FirestoreClinicRepository implements ClinicRepository {
   @override
   Future<Result<List<Clinic>>> listEmergency24h() async {
     try {
-      final query = await _clinics
-          .where('emergency24h', isEqualTo: true)
-          .get();
+      final query = await _clinics.where('emergency24h', isEqualTo: true).get();
       final clinics = <Clinic>[];
       for (final doc in query.docs) {
         clinics.add(_docToClinic(doc.id, doc.data()));
@@ -194,39 +197,38 @@ class FirestoreClinicRepository implements ClinicRepository {
   }
 
   static Map<String, dynamic> _toMap(Clinic clinic) => {
-        'name': clinic.name,
-        'address': clinic.address,
-        'phone': clinic.phone,
-        if (clinic.email != null) 'email': clinic.email,
-        'specialties': clinic.specialties,
-        'hours': clinic.hours,
-        'emergency24h': clinic.emergency24h,
-        'services': clinic.services,
-        if (clinic.latitude != null) 'latitude': clinic.latitude,
-        if (clinic.longitude != null) 'longitude': clinic.longitude,
-        if (clinic.createdAt != null) 'createdAt': clinic.createdAt,
-        if (clinic.updatedAt != null) 'updatedAt': clinic.updatedAt,
-      };
+    'name': clinic.name,
+    'address': clinic.address,
+    'phone': clinic.phone,
+    if (clinic.email != null) 'email': clinic.email,
+    'specialties': clinic.specialties,
+    'hours': clinic.hours,
+    'emergency24h': clinic.emergency24h,
+    'services': clinic.services,
+    if (clinic.latitude != null) 'latitude': clinic.latitude,
+    if (clinic.longitude != null) 'longitude': clinic.longitude,
+    if (clinic.createdAt != null) 'createdAt': clinic.createdAt,
+    if (clinic.updatedAt != null) 'updatedAt': clinic.updatedAt,
+  };
 
-  String _generateId() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
+  String _generateId() => DateTime.now().millisecondsSinceEpoch.toString();
 }
 
 /// Extensión para copiar una clínica con nuevo id.
 extension ClinicCopy on Clinic {
   Clinic copyWith({String? id}) => Clinic(
-        id: id ?? this.id,
-        name: name,
-        address: address,
-        phone: phone,
-        email: email,
-        specialties: specialties,
-        hours: hours,
-        emergency24h: emergency24h,
-        services: services,
-        latitude: latitude,
-        longitude: longitude,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+    id: id ?? this.id,
+    name: name,
+    address: address,
+    phone: phone,
+    email: email,
+    specialties: specialties,
+    hours: hours,
+    emergency24h: emergency24h,
+    services: services,
+    latitude: latitude,
+    longitude: longitude,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 }

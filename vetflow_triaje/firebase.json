@@ -1,1 +1,44 @@
-{"firestore":{"rules":"firestore.rules"},"storage":{"rules":"firebase/storage.rules"},"flutter":{"platforms":{"android":{"default":{"projectId":"vetflow-triaje-firebase","appId":"1:722035172290:android:ab78b043813cf2187b6c5b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"vetflow-triaje-firebase","configurations":{"android":"1:722035172290:android:ab78b043813cf2187b6c5b","ios":"1:722035172290:ios:53245dce821e924d7b6c5b","macos":"1:722035172290:ios:53245dce821e924d7b6c5b","web":"1:722035172290:web:3e68d85e8dfa77d57b6c5b"}}}}}}
+{
+	"firestore": {
+		"rules": "firestore.rules"
+	},
+	"storage": {
+		"rules": "firebase/storage.rules"
+	},
+	"hosting": {
+		"public": "build/web",
+		"ignore": [
+			"firebase.json",
+			"**/.*",
+			"**/node_modules/**"
+		],
+		"rewrites": [
+			{
+				"source": "**",
+				"destination": "/index.html"
+			}
+		]
+	},
+	"flutter": {
+		"platforms": {
+			"android": {
+				"default": {
+					"projectId": "vetflow-triaje-firebase",
+					"appId": "1:722035172290:android:ab78b043813cf2187b6c5b",
+					"fileOutput": "android/app/google-services.json"
+				}
+			},
+			"dart": {
+				"lib/firebase_options.dart": {
+					"projectId": "vetflow-triaje-firebase",
+					"configurations": {
+						"android": "1:722035172290:android:ab78b043813cf2187b6c5b",
+						"ios": "1:722035172290:ios:53245dce821e924d7b6c5b",
+						"macos": "1:722035172290:ios:53245dce821e924d7b6c5b",
+						"web": "1:722035172290:web:3e68d85e8dfa77d57b6c5b"
+					}
+				}
+			}
+		}
+	}
+}

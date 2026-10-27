@@ -10,10 +10,11 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class PetPhotoStorage {
-  PetPhotoStorage({FirebaseStorage? storage})
-      : _storage = storage ?? FirebaseStorage.instance;
+  PetPhotoStorage({FirebaseStorage? storage}) : _storageOverride = storage;
 
-  final FirebaseStorage _storage;
+  final FirebaseStorage? _storageOverride;
+
+  FirebaseStorage get _storage => _storageOverride ?? FirebaseStorage.instance;
 
   /// Tamaño máximo permitido: 5 MB.
   static const int maxSizeBytes = 5 * 1024 * 1024;
