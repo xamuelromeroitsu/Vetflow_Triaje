@@ -19,11 +19,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vetflow_triaje/features/auth/presentation/login_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vetflow_triaje/features/auth/presentation/register_screen.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/login_screen_clinical_mint.dart';
-import 'package:vetflow_triaje/features/auth/presentation/screens/onboarding_welcome_clinical_mint.dart';
-import 'package:vetflow_triaje/features/onboarding/presentation/welcome_screen.dart';
+import 'package:vetflow_triaje/features/auth/presentation/screens/dogo_welcome_screen.dart';
 import 'package:vetflow_triaje/features/pets/presentation/pet_list_screen.dart';
 import 'package:vetflow_triaje/features/pets/presentation/pet_register_screen.dart';
 import 'package:vetflow_triaje/features/queue/presentation/queue_screen.dart';
@@ -49,7 +48,13 @@ String? _authRedirect(BuildContext context, GoRouterState state) {
   final registering = location == '/register';
 
   if (!isLoggedIn) {
-    if (!loggingIn && !registering) return '/login';
+    const publicLocations = {
+      '/',
+      '/login',
+      '/register',
+      '/emergency',
+    };
+    if (!publicLocations.contains(location)) return '/login';
     return null;
   }
 
@@ -65,7 +70,7 @@ final GoRouter appRouter = GoRouter(
     // Pantalla de bienvenida / onboarding
     GoRoute(
       path: '/',
-      builder: (context, state) => const OnboardingWelcomeClinicalMintScreen(),
+      builder: (context, state) => const DogoWelcomeScreen(),
     ),
 
     // Autenticación
@@ -170,9 +175,7 @@ class EmergencyScreen extends StatelessWidget {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {
-                  // Llamada directa al número de emergencia
-                },
+                onPressed: () => _placeEmergencyCall(context),
                 icon: const Icon(Icons.phone),
                 label: const Text('Llamar 911-PET'),
               ),
@@ -181,5 +184,19 @@ class EmergencyScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _placeEmergencyCall(BuildContext context) async {
+    final launched = await launchUrl(
+      Uri(scheme: 'tel', path: '911'),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo abrir la línea de emergencias.'),
+        ),
+      );
+    }
   }
 }

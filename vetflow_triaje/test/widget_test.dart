@@ -14,5 +14,9 @@ void main() {
     await tester.pumpWidget(const VetFlowApp());
 
     expect(find.byType(MaterialApp), findsOneWidget);
+    expect(
+      find.text('Atención médica y triaje rápido para tu mascota'),
+      findsOneWidget,
+    );
   });
 }
