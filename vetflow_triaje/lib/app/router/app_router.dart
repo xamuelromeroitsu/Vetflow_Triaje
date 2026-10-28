@@ -23,13 +23,15 @@ import 'package:vetflow_triaje/features/auth/presentation/register_screen.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/login_screen_clinical_mint.dart';
 import 'package:vetflow_triaje/features/auth/presentation/screens/dogo_welcome_screen.dart';
 import 'package:vetflow_triaje/features/pets/presentation/pet_list_screen.dart';
-import 'package:vetflow_triaje/features/pets/presentation/pet_register_screen.dart';
-import 'package:vetflow_triaje/features/queue/presentation/queue_screen.dart';
+import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/registro_mascota_screen.dart';
+import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/ficha_signos_vitales_screen.dart';
+import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/cola_en_tiempo_real_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/red_flags_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/symptoms_screen.dart';
-import 'package:vetflow_triaje/features/triage/presentation/triage_result_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/vet_confirmation_screen.dart';
-import 'package:vetflow_triaje/features/triage/presentation/vital_signs_screen.dart';
+import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/triage_evaluacion_screen.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
+import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 
 /// Redirige según el estado de autenticación.
 ///
@@ -83,7 +85,7 @@ GoRouter createAppRouter({required bool Function() hasSession}) {
       ),
       GoRoute(
         path: '/pets/register',
-        builder: (context, state) => const PetRegisterScreen(),
+        builder: (context, state) => const RegistroMascotaScreen(),
       ),
 
       // Triaje
@@ -97,11 +99,52 @@ GoRouter createAppRouter({required bool Function() hasSession}) {
       ),
       GoRoute(
         path: '/triage/vitals',
-        builder: (context, state) => const VitalSignsScreen(),
+        builder: (context, state) {
+          final datos = state.extra;
+          if (datos is MascotaRegistro) {
+            return FichaSignosVitalesScreen(
+              nombreMascota: datos.nombre,
+              raza: datos.raza,
+              sexoTexto: datos.sexo == Sexo.macho ? 'Macho' : 'Hembra',
+              etiquetaEdad:
+                  '${datos.edad?.toStringAsFixed(0) ?? '0'} ${datos.unidadEdad.toLowerCase()}',
+              especie: switch (datos.especie) {
+                Especie.perro => 'Perro',
+                Especie.gato => 'Gato',
+                Especie.exotico => 'Exótico',
+              },
+              fotoPath: datos.fotoPath,
+            );
+          }
+          return const FichaSignosVitalesScreen(
+            nombreMascota: 'Luna',
+            raza: 'Común Europeo',
+            sexoTexto: 'Hembra Esterilizada',
+            etiquetaEdad: '3 años',
+            especie: 'felino',
+          );
+        },
       ),
       GoRoute(
         path: '/triage/result',
-        builder: (context, state) => const TriageResultScreen(),
+        builder: (context, state) {
+          final resultado = state.extra is TriageResult
+              ? state.extra! as TriageResult
+              : const TriageResult(
+                  suggested: TriageLevel.emergencia,
+                  reasons: [
+                    'Dificultad respiratoria aguda acompañada de letargo repentino y palidez elevada en encías. Compromiso de oxigenación detectado',
+                  ],
+                  rulesVersion: '1.0',
+                );
+          return TriageEvaluacionScreen(
+            resultado: resultado,
+            nombreMascota: 'Milo',
+            raza: 'Golden Retriever',
+            pesoKg: 28.4,
+            etiquetaEdad: '3 años',
+          );
+        },
       ),
       GoRoute(
         path: '/triage/vet-confirmation',
@@ -109,7 +152,10 @@ GoRouter createAppRouter({required bool Function() hasSession}) {
       ),
 
       // Cola / clínicas
-      GoRoute(path: '/queue', builder: (context, state) => const QueueScreen()),
+      GoRoute(
+        path: '/queue',
+        builder: (context, state) => const ColaEnTiempoRealScreen(),
+      ),
 
       // Emergencia
       GoRoute(

@@ -10,11 +10,16 @@ class WelcomeActions extends StatelessWidget {
     super.key,
     required this.onLogin,
     required this.onRegister,
+    this.onRegisterPet,
     this.onGuest,
   });
 
   final VoidCallback onLogin;
   final VoidCallback onRegister;
+
+  /// Acceso directo al registro de nueva mascota (enlaza el módulo MVP).
+  final VoidCallback? onRegisterPet;
+
   final VoidCallback? onGuest;
 
   void _tap(VoidCallback action) {
@@ -76,6 +81,33 @@ class WelcomeActions extends StatelessWidget {
             ),
           ),
         ),
+        // Módulo de registro de mascota (pantalla de mvp 0000)
+        if (onRegisterPet != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          SizedBox(
+            width: double.infinity,
+            height: AppSpacing.touchTarget,
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.surfaceContainerLowest,
+                foregroundColor: AppColors.primary,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
+              ),
+              onPressed: () => _tap(onRegisterPet!),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.pets, size: 20),
+                  SizedBox(width: 8),
+                  Text('Registrar Nueva Mascota'),
+                ],
+              ),
+            ),
+          ),
+        ],
         if (guestAction != null) ...[
           const SizedBox(height: AppSpacing.sm),
           TextButton.icon(
