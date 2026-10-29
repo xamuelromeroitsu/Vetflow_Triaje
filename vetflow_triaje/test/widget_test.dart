@@ -7,24 +7,33 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:vetflow_triaje/main.dart';
+import 'package:vetflow_triaje/app/app.dart';
+import 'package:vetflow_triaje/app/router/app_router.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('smoke test renders app shell', (WidgetTester tester) async {
+    final router = createAppRouter(hasSession: () => false);
+    addTearDown(router.dispose);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(VetFlowApp(router: router));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.byType(MaterialApp), findsOneWidget);
+    expect(
+      find.text('Atención médica y triaje rápido para tu mascota'),
+      findsOneWidget,
+    );
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('pet registration route opens the pets feature form', (
+    WidgetTester tester,
+  ) async {
+    final router = createAppRouter(hasSession: () => true);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(VetFlowApp(router: router));
+    router.go('/pets/register');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Registrar Nueva Mascota'), findsOneWidget);
   });
 }

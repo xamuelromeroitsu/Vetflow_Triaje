@@ -5,7 +5,7 @@
 | RNF-01 | Disponibilidad | Resultado de emergencia visible aunque no haya conexión |
 | RNF-02 | Offline | No perder lo escrito si se cae la conexión; reenvío automático |
 | RNF-03 | Seguridad | Un dueño solo ve sus datos; el personal solo los de su clínica |
-| RNF-04 | Validación | Validar en el móvil y en las reglas de Firestore |
+| RNF-04 | Validación | Validar en el móvil y en políticas RLS/Storage de Supabase |
 | RNF-05 | Usabilidad | Botones grandes, pocos pasos, lenguaje no técnico |
 | RNF-06 | Accesibilidad | El nivel nunca se comunica solo con color: color + icono + texto |
 | RNF-07 | Idioma | Español; unidades fijas °C y kg |

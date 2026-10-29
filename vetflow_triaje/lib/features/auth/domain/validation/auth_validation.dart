@@ -1,6 +1,6 @@
 /// Validación de credenciales en el móvil.
 ///
-/// Firebase Auth exige contraseñas de 6 caracteres o más; es una restricción
+/// Se requieren contraseñas de 6 caracteres o más; es una restricción
 /// de plataforma, no una regla clínica.
 library;
 
@@ -47,10 +47,7 @@ Result<Credentials> validateCredentials({
 
   if (errors.isNotEmpty) {
     return Result.failure(
-      DomainError(
-        message: 'Revisa el email y la contraseña',
-        fields: errors,
-      ),
+      DomainError(message: 'Revisa el email y la contraseña', fields: errors),
     );
   }
 

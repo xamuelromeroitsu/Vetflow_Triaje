@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vetflow_triaje/infrastructure/firebase/profile/user_profile_mapper.dart';
 import 'package:vetflow_triaje/features/auth/domain/model/user_profile.dart';
 import 'package:vetflow_triaje/features/auth/domain/model/user_role.dart';
+import 'package:vetflow_triaje/infrastructure/supabase/supabase_repositories.dart';
 
 void main() {
-  group('UserProfileMapper', () {
+  group('SupabaseUserProfileMapper', () {
     test('roundtrip dueño', () {
       const profile = UserProfile(
         uid: 'uid-1',
@@ -14,8 +13,8 @@ void main() {
         ownerId: 'uid-1',
       );
 
-      final map = UserProfileMapper.toMap(profile);
-      final decoded = UserProfileMapper.fromMap(profile.uid, map);
+      final map = SupabaseUserProfileMapper.toMap(profile);
+      final decoded = SupabaseUserProfileMapper.fromMap(map);
 
       expect(decoded, isNotNull);
       expect(decoded!.role, UserRole.dueno);
@@ -31,9 +30,8 @@ void main() {
         companyId: 'empresa-1',
       );
 
-      final decoded = UserProfileMapper.fromMap(
-        profile.uid,
-        UserProfileMapper.toMap(profile),
+      final decoded = SupabaseUserProfileMapper.fromMap(
+        SupabaseUserProfileMapper.toMap(profile),
       );
 
       expect(decoded?.role, UserRole.personal);
@@ -41,7 +39,8 @@ void main() {
     });
 
     test('rechaza roles desconocidos', () {
-      final decoded = UserProfileMapper.fromMap('uid-1', {
+      final decoded = SupabaseUserProfileMapper.fromMap({
+        'id': 'uid-1',
         'email': 'ana@ejemplo.com',
         'role': 'admin_magico',
       });
@@ -50,7 +49,8 @@ void main() {
     });
 
     test('rechaza tipos inválidos', () {
-      final decoded = UserProfileMapper.fromMap('uid-1', {
+      final decoded = SupabaseUserProfileMapper.fromMap({
+        'id': 'uid-1',
         'email': 42,
         'role': 'dueno',
       });
@@ -58,12 +58,13 @@ void main() {
       expect(decoded, isNull);
     });
 
-    test('createdAt se lee como timestamp de Firestore', () {
+    test('createdAt se lee como fecha ISO-8601', () {
       final now = DateTime.utc(2026, 10, 12, 12);
-      final decoded = UserProfileMapper.fromMap('uid-1', {
+      final decoded = SupabaseUserProfileMapper.fromMap({
+        'id': 'uid-1',
         'email': 'ana@ejemplo.com',
         'role': 'dueno',
-        'createdAt': Timestamp.fromDate(now),
+        'created_at': now.toIso8601String(),
       });
 
       expect(decoded?.createdAt?.toUtc(), now);

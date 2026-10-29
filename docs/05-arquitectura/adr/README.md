@@ -4,7 +4,7 @@ Cada decisión importante se escribe una vez, con su motivo. Plantilla: [../../p
 
 | ADR | Decisión | Estado |
 |---|---|---|
-| [0001](0001-flutter-y-firebase.md) | Flutter + Firebase | Propuesta |
+| [0001](0001-flutter-y-supabase.md) | Flutter + Supabase | Aceptada (migración implementada; despliegue pendiente) |
 | [0002](0002-duenos-y-mascotas-fuera-de-la-clinica.md) | Dueño y mascota fuera de la clínica | Propuesta |
 | [0003](0003-triaje-por-reglas-versionadas.md) | Triaje por reglas versionadas | Propuesta |
 | [0005](0005-reglas-por-especie.md) | Reglas específicas por especie | Aceptada |

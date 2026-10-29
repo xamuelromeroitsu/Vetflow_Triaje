@@ -1,6 +1,6 @@
 # VetFlow Triaje – instrucciones para Claude Code
 
-App móvil (Flutter + Firebase) que sugiere un nivel de triaje veterinario: Emergencia / Urgencia / Consulta. Estado: Fase 0 (documentación), el código empieza en el Paso 0.
+App móvil (Flutter + Supabase) que sugiere un nivel de triaje veterinario: Emergencia / Urgencia / Consulta. El código vive en `vetflow_triaje/`; el backend usa Supabase Auth, PostgreSQL con RLS y Storage.
 
 ## Antes de trabajar
 1. Lee `docs/README.md` (mapa de documentación) y el documento que afecte a tu tarea.
@@ -12,14 +12,14 @@ App móvil (Flutter + Firebase) que sugiere un nivel de triaje veterinario: Emer
 - **El veterinario confirma.** Se guardan `suggested` y `confirmed` por separado, más `reasons` y `rulesVersion`.
 - **Reglas clínicas = borrador** hasta que un veterinario las valide (`docs/03-triaje-clinico/validacion-veterinaria.md`). No inventar rangos ni síntomas.
 - **Nunca solo color:** el nivel se comunica con color + icono + texto.
-- **Validar en el móvil y en las reglas de Firestore**, nunca solo en uno.
+- **Validar en el móvil y en las políticas RLS de Supabase**, nunca solo en uno.
 - **Datos mínimos:** no pedir ni guardar datos que el triaje no necesite.
 - **Dueño y mascota fuera de la clínica** (`owners`, `pets`, `visits` con `companyId` opcional). Ver ADR-0002.
 - La app **no diagnostica**; mantener el aviso en los textos al usuario.
 - Sin afirmaciones sin respaldo en textos de la app (ej. "99 % de precisión", "diagnóstico").
 
 ## Stack y estructura
-Flutter · Firebase Auth · Firestore (persistencia offline) · Storage. Código en `app/lib/` con `shared/` (kernel) y `features/` (un slice vertical por dominio). El motor de triaje (`features/triage/`) no depende de la UI. Estructura completa: `docs/05-arquitectura/arquitectura-carpetas.md`.
+Flutter · Supabase Auth · PostgreSQL con RLS · Supabase Storage. Código en `vetflow_triaje/lib/` con `app/`, `shared/` y `features/` (un slice vertical por dominio, incluida su presentación). El motor de triaje (`features/triage/`) no depende de la UI. Estructura completa: `docs/05-arquitectura/arquitectura-carpetas.md`.
 
 ## Herramientas
 - **Notion (MCP remoto)**: `opencode.json` declara el servidor `notion` → `https://mcp.notion.com/mcp`. Permite leer, crear y actualizar páginas de Notion (documentación de producto compartida con el equipo).

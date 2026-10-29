@@ -9,7 +9,7 @@ Cuando entre, la estructura será:
 ```
 domain/
 ├── model/     TriageLevel, SymptomRule, TriageInput, TriageResult, rangos
-├── service/   TriageEngine (domain service puro, sin Flutter ni Firebase)
+├── service/   TriageEngine (domain service puro, sin Flutter ni backend)
 └── port/      (si el motor necesita leer/guardar algo)
 application/use_case/  EvaluateTriage
 ```

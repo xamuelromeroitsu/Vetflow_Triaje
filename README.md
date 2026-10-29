@@ -1,8 +1,8 @@
 # 🐾 VetFlow Triaje
 
-App móvil (Flutter + Firebase) donde el dueño de una mascota describe los síntomas y el sistema **sugiere** un nivel de prioridad: 🔴 Emergencia · 🟠 Urgencia · 🟢 Consulta. El veterinario confirma. A futuro, base de una red de clínicas veterinarias.
+App móvil (Flutter + Supabase) donde el dueño de una mascota describe los síntomas y el sistema **sugiere** un nivel de prioridad: 🔴 Emergencia · 🟠 Urgencia · 🟢 Consulta. El veterinario confirma. A futuro, base de una red de clínicas veterinarias.
 
-> **Estado:** Fase 0 – Documentación (sin código todavía).
+> **Estado:** Aplicación Flutter en desarrollo; migración de backend a Supabase implementada. Para configurar y ejecutar la app, consulta [la guía de migración](documentacion-migracion-supabase.md).
 
 ## Empieza aquí
 | Si quieres… | Lee |
@@ -14,14 +14,14 @@ App móvil (Flutter + Firebase) donde el dueño de una mascota describe los sín
 | Colaborar | [CONTRIBUTING.md](CONTRIBUTING.md) |
 
 ## Stack previsto
-Flutter · Firebase Auth · Cloud Firestore · Firebase Storage.
+Flutter · Supabase Auth · PostgreSQL con RLS · Supabase Storage.
 
 ## Estructura del repo
 ```
 Vetflow_Triaje/
 ├── README.md · CONTRIBUTING.md · CHANGELOG.md
 ├── docs/        ← documentación previa al código
-└── app/         ← (se creará en el Paso 0) proyecto Flutter
+└── vetflow_triaje/ ← aplicación Flutter y migraciones de Supabase
 ```
 
 ## ⚠️ Aviso

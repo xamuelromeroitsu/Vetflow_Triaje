@@ -1,6 +1,6 @@
 /// Caso de uso: inicio de sesión con email y contraseña.
 ///
-/// El rol sale siempre del perfil en Firestore (users/{uid}), nunca de lo que
+/// El rol sale siempre del perfil persistido, nunca de lo que
 /// envíe el cliente. Si la cuenta existe pero el perfil falta, se crece con el
 /// rol menos privilegiado (`dueno`) para no dejar al usuario fuera.
 library;
@@ -64,20 +64,15 @@ class SignInWithEmail {
   /// Auto-curación: cuenta sin perfil → se crece como `dueno`.
   Future<Result<UserProfile>> _healMissingProfile(String uid, String email) {
     return profileRepository.create(
-      UserProfile(
-        uid: uid,
-        email: email,
-        role: UserRole.dueno,
-        ownerId: uid,
-      ),
+      UserProfile(uid: uid, email: email, role: UserRole.dueno, ownerId: uid),
     );
   }
 
   AppUser _appUser(UserProfile profile) => AppUser(
-        uid: profile.uid,
-        email: profile.email,
-        role: profile.role,
-        ownerId: profile.ownerId,
-        companyId: profile.companyId,
-      );
+    uid: profile.uid,
+    email: profile.email,
+    role: profile.role,
+    ownerId: profile.ownerId,
+    companyId: profile.companyId,
+  );
 }

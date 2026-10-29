@@ -10,6 +10,7 @@ class AppUser {
     required this.role,
     this.ownerId,
     this.companyId,
+    this.requiresEmailConfirmation = false,
   });
 
   final String uid;
@@ -21,4 +22,6 @@ class AppUser {
 
   /// Clínica asociada (Fase 4).
   final String? companyId;
+
+  final bool requiresEmailConfirmation;
 }

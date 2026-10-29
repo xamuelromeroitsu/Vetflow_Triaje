@@ -17,8 +17,9 @@ Estado: ✅ completo · 🟡 borrador (necesita revisión) · ⬜ por completar
 | [functional-spec.md](02-requisitos/functional-spec.md) | 🟡 |
 | [flujos-usuario.md](02-requisitos/flujos-usuario.md) | 🟡 |
 | [requisitos-no-funcionales.md](02-requisitos/requisitos-no-funcionales.md) | 🟡 |
-| [epicas.md](02-requisitos/epicas.md) | 🟡 |
-| [historias/indice.md](02-requisitos/historias/indice.md) | 🟡 |
+| [epicas.md](02-requisitos/epicas.md) | ✅ 8 épicas definidas (EPC-01 a EPC-08) |
+| [epicas-implementadas.md](02-requisitos/epicas-implementadas.md) | ✅ implementación de backend por épica |
+| [historias/indice.md](02-requisitos/historias/indice.md) | ✅ 20 historias (US-01 a US-20) |
 | [historias/EPC-01-captura.md](02-requisitos/historias/EPC-01-captura.md) | 🟡 |
 
 ## 03 · Triaje clínico – *¿cómo se decide el nivel?*

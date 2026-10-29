@@ -27,6 +27,8 @@ class _FakeAuthRepository implements AuthRepository {
   Future<Result<AuthAccount>> registerWithEmail({
     required String email,
     required String password,
+    required String name,
+    required String phone,
   }) {
     throw UnimplementedError();
   }
@@ -118,10 +120,7 @@ void main() {
       ),
     );
 
-    final result = await useCase(
-      email: 'ana@ejemplo.com',
-      password: ' mala',
-    );
+    final result = await useCase(email: 'ana@ejemplo.com', password: ' mala');
 
     expect(result, isA<Failure<AppUser>>());
     expect(profiles.created, isEmpty);

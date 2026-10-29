@@ -1,8 +1,8 @@
 # Autenticación (dominio `auth`)
 
 Dominio implementado: **registro, inicio de sesión y cierre de sesión con
-rol** (`dueno` / `personal`). El rol se guarda en Firestore
-`users/{uid}` y las reglas impiden que el cliente se lo cambie. El
+rol** (`dueno` / `personal`). El rol se guarda en `public.user_profiles`
+y las políticas RLS impiden que el cliente se lo cambie. El
 auto-registro solo crea `dueno`; el personal se dará de alta por invitación
 en Fase 2 (`docs/08-admin/sistema-admin.md`).
 
@@ -16,9 +16,9 @@ domain/
 application/use_case/  RegisterWithEmail, SignInWithEmail, SignOut
 ```
 
-Los adaptadores de Firebase viven en
-`infrastructure/firebase/{auth,profile}/` y se inyectan desde `app/di/`.
+Los adaptadores Supabase viven en
+`infrastructure/supabase/` y se inyectan desde `app/di/`.
 
-Para conectarlo a un proyecto real: `flutterfire configure` (regenera
-`lib/firebase_options.dart`) + habilitar el proveedor Email/Contraseña en la
-consola de Firebase + `firebase deploy --only firestore:rules`.
+Para conectarlo al proyecto real, configurar `SUPABASE_URL` y
+`SUPABASE_ANON_KEY` en `.env`, habilitar Email en Supabase Auth y aplicar la
+migración SQL con sus políticas RLS.

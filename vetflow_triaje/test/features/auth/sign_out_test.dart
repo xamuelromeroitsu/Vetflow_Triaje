@@ -27,6 +27,8 @@ class _FakeAuthRepository implements AuthRepository {
   Future<Result<AuthAccount>> registerWithEmail({
     required String email,
     required String password,
+    required String name,
+    required String phone,
   }) {
     throw UnimplementedError();
   }

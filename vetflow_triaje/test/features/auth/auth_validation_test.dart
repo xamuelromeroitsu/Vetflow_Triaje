@@ -23,7 +23,7 @@ void main() {
       expect(fields.single.field, 'email');
     });
 
-    test('contraseña corta (mínimo de Firebase Auth: 6)', () {
+    test('contraseña corta (mínimo configurado: 6)', () {
       final result = validateCredentials(
         email: 'ana@ejemplo.com',
         password: '12345',

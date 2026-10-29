@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "secondary-fixed-dim": "#bcc7de", "surface": "#f8f9ff", "tertiary-container": "#ff928b", "on-surface": "#0b1c30", "primary-fixed": "#71fac8", "surface-container-high": "#dce9ff", "secondary": "#545f73", "on-primary-fixed-variant": "#00513b", "surface-container-lowest": "#ffffff", "secondary-fixed": "#d8e3fb", "surface-bright": "#f8f9ff", "surface-container-highest": "#d3e4fe", "on-surface-variant": "#3c4a43", "surface-tint": "#006c4f", "tertiary-fixed": "#ffdad7", "on-background": "#0b1c30", "on-error": "#ffffff", "on-secondary-fixed": "#111c2d", "tertiary-fixed-dim": "#ffb3ad", "on-tertiary-container": "#8d0012", "on-tertiary": "#ffffff", "error": "#ba1a1a", "background": "#f8f9ff", "surface-dim": "#cbdbf5", "outline": "#6c7a73", "primary": "#006c4f", "inverse-surface": "#213145", "on-primary": "#ffffff", "error-container": "#ffdad6", "surface-container-low": "#eff4ff", "surface-variant": "#d3e4fe", "on-secondary-fixed-variant": "#3c475a", "tertiary": "#b91a24", "on-secondary-container": "#586377", "surface-container": "#e5eeff", "primary-fixed-dim": "#50ddad", "inverse-on-surface": "#eaf1ff", "secondary-container": "#d5e0f8", "outline-variant": "#bbcac1", "on-error-container": "#93000a", "inverse-primary": "#50ddad", "on-primary-container": "#004e38", "on-primary-fixed": "#002116", "on-tertiary-fixed": "#410004", "on-tertiary-fixed-variant": "#930013", "on-secondary": "#ffffff", "primary-container": "#32c798" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-md": "1rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "space-xl": "2rem", "margin": "1rem", "gutter": "1rem", "gutter-mobile": "0.75rem", "margin-tablet": "1.5rem", "space-sm": "0.5rem" }, fontFamily: { "headline-lg": ["Inter"], "headline-md": ["Inter"], "headline-sm": ["Inter"], "label-md": ["Inter"], "body-lg": ["Inter"], "body-md": ["Inter"], "vital-metric": ["Inter"], "label-lg": ["Inter"], "label-sm": ["Inter"], "headline-xl": ["Inter"], "body-sm": ["Inter"] }, fontSize: { "headline-lg": ["26px", { lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }], "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }], "vital-metric": ["28px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "700" }], "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }] } } } };</script><style>@layer base { html, body { width: 100%; margin: 0; padding: 0; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="DOGO Triage Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WVp1AQB4RLA-K3FhqzhccHVxxwEMf3DwySHrt7cd4PtDpYw-Ps8a4AE0TU2GJfz75nnkj8rVbPBqKrOGsOttuay26MXlgX9AEAgwdhc8mGm1ql56DiY81scX-HqlDoiIFtIZ2Q3BKr0gicuKxDVaReK2VZG8ySXhU2p9ImCJFFaTWVlf_FYCjIOGM4oCUgsuz7Tnm4w1KnU6j_wyjvdbGVszhY37xpcw5UQ1X8Igv1I03-jpXtuqSqmg"/><div class="flex flex-col"><span class="font-label-sm text-label-sm tracking-wider uppercase text-primary font-bold">DOGO TRIAGE</span><h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Cola en Tiempo Real</h1></div></div><div class="flex items-center gap-space-sm"><button aria-label="Indicador de Alerta de Emergencia" class="relative flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full text-tertiary hover:bg-tertiary-fixed/40 transition-colors"><span class="material-symbols-outlined text-[24px]">emergency</span><span class="absolute top-2 right-2 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span></span></button><div class="flex items-center justify-center min-w-[44px] min-h-[44px]"><img alt="Perfil" class="w-8 h-8 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdQMRk5YM7RZmXgPgEj9qWjpYw7ibO03uNJF2YJWe4aNRKioDh9ykNgHOeOFdY__41YxPHQ6W_Y4G9nr6bolTr8AmW27DF36Oh4BXIMvtgcQsreegYe2NpyFUwrrh9yMuwr2UpbaAF-g2SaKy8GEviEkFegaxQ7CPVRikuRNgbYhRknOwFuQJZP2i1pj87nLNrwkgM2wp7uAmJAhaeMwCyJxXRBFqtvGCecggvo7K0kJ_1J-GxZfQZ"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-surface"><div class="flex flex-col w-full">
+<div class="px-margin pt-space-sm pb-space-lg flex flex-col gap-space-md">
+<!-- Live Clinic Duty Status Pill / Banner -->
+<div class="w-full bg-surface-container-high rounded-xl p-space-sm flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">local_hospital</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="relative flex h-2 w-2 shrink-0">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface truncate">URGENCIAS VET METROPOLITAN</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Guardia Sala 3: Dra. Priya Sharma</span>
+</div>
+</div>
+<button aria-label="Actualizar Cola" class="min-w-[44px] min-h-[44px] flex items-center justify-center text-secondary hover:text-on-surface transition-colors active:scale-95" id="refreshBtn">
+<span class="material-symbols-outlined text-[20px]" id="refreshIcon">refresh</span>
+</button>
+</div>
+<!-- Active Case Spotlight: Owner's Pet (US-10 Turn Status) -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-md relative overflow-hidden flex flex-col gap-space-sm">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-tertiary/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+<span class="font-label-sm text-label-sm uppercase">¡TU TURNO EN VIVO!</span>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span id="syncTimestamp">Actualizado hace 10s</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md mt-1">
+<div class="relative shrink-0">
+<img class="w-16 h-16 rounded-full object-cover shadow-sm" data-alt="A portrait of a gentle golden retriever dog looking forward in warm clinic lighting with clean clinical tones and turquoise collar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIlyh92aPRmGoha77bCUkxvg4EvUJDlHsUz3S5dQ65WE3eAY8nmRSTixhBNV1wsttnbSE2g8UDaZDTPBEszySa0wMsUDQXaq1cZWsT2bwnW21-NkhNCjLnODyakeQWU8UrPc2Of4wtG8cFuB9eYwatIM7-2CUziyVk3nl7NwS4Ipmz4uhrqB28pJ0UvTTRtE_9UZBSDCDtpAGxL6vvumNfq7NHIwdt3KTdAR4d7HiecN-zfNM0REbx"/>
+<span class="absolute bottom-0 right-0 w-5 h-5 bg-tertiary rounded-full flex items-center justify-center text-on-tertiary font-bold text-[10px] shadow-sm">2</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-md text-headline-md text-on-surface truncate">Milo</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-secondary-container font-label-sm text-label-sm">Perro</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary truncate">Golden Retriever • Sarah K. (Tú)</p>
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px]">air</span>
+            Dificultad Respiratoria Aguda
+          </span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm mt-2">
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">ORDEN EN COLA</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-vital-metric text-vital-metric text-on-surface">#2</span>
+<span class="font-body-sm text-body-sm text-secondary">en cola</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+            ~8 min de espera
+          </span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">SALA ASIGNADA</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Triaje B</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-1">Equipo Preparado</span>
+</div>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2 overflow-hidden mt-1">
+<div class="bg-primary-container h-full rounded-full transition-all duration-700 ease-out" style="width: 78%"></div>
+</div>
+<div class="flex justify-between items-center text-secondary font-label-sm text-label-sm">
+<span>Admisión Completa</span>
+<span class="font-bold text-on-surface">Siguiente: Examen Físico</span>
+</div>
+</div>
+<!-- Filter Tabs (Horizontal Scrollable Pill Group) -->
+<div class="flex flex-col gap-space-xs mt-1">
+<div class="flex items-center justify-between">
+<h3 class="font-label-lg text-label-lg text-on-surface">Cola de Atención en Vivo</h3>
+<span class="font-label-sm text-label-sm text-secondary">5 Pacientes</span>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-margin px-margin no-scrollbar" id="filterContainer">
+<button class="filter-tab min-h-[44px] px-4 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm shrink-0 flex items-center gap-1.5 transition-all" data-filter="all">
+<span>Todas las Prioridades</span>
+<span class="w-5 h-5 rounded-full bg-on-primary/20 flex items-center justify-center text-[11px] font-bold">5</span>
+</button>
+<button class="filter-tab min-h-[44px] px-4 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shrink-0 flex items-center gap-1.5 shadow-sm transition-all" data-filter="emergency">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Emergencia</span>
+<span class="w-5 h-5 rounded-full bg-surface-container text-on-surface font-bold text-[11px] flex items-center justify-center">2</span>
+</button>
+<button class="filter-tab min-h-[44px] px-4 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shrink-0 flex items-center gap-1.5 shadow-sm transition-all" data-filter="urgent">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span>Urgencia</span>
+<span class="w-5 h-5 rounded-full bg-surface-container text-on-surface font-bold text-[11px] flex items-center justify-center">2</span>
+</button>
+<button class="filter-tab min-h-[44px] px-4 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shrink-0 flex items-center gap-1.5 shadow-sm transition-all" data-filter="consultation">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Consulta</span>
+<span class="w-5 h-5 rounded-full bg-surface-container text-on-surface font-bold text-[11px] flex items-center justify-center">1</span>
+</button>
+</div>
+</div>
+<!-- Real-Time Acuity Sorted List (Strict Severity Order) -->
+<div class="flex flex-col gap-space-sm" id="queueList">
+<!-- Patient 1: Rocky (Emergency) -->
+<article class="queue-item w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-2 relative overflow-hidden transition-all" data-priority="emergency">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary"></div>
+<div class="flex items-start justify-between pl-2">
+<div class="flex items-center gap-space-sm min-w-0">
+<img class="w-11 h-11 rounded-full object-cover shrink-0 shadow-sm" data-alt="Close up portrait of a German Shepherd with alert ears and focused look in a modern veterinary exam room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6K1dWHhID2u9IExkelxqFT_SKu6ZbJ_FeMNJEsjgpdPeKSaYoz94nlAykLwGIoyavcsfW1iUzw_hoOTSVmSnLLqJTiW1995XZm0JC2Gymn8Gj5XiBYDiecOMUx2udQsk5UNZElxkSddKoE0fEgHOsWJf6yqCU6fIKOWf5LddflMS5aHVTdJ9oMcITVZLwvE-oMNSegxNL6U717_2k6kFKvccO4EKyK40Ws9fiAKVjmLlRiFajba4g"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Rocky</span>
+<span class="font-label-sm text-label-sm text-secondary truncate">• Pastor Alemán</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Tutor: Carlos M.</span>
+</div>
+</div>
+<span class="shrink-0 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm flex items-center gap-1">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+            EMERGENCIA
+          </span>
+</div>
+<div class="pl-2 bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm font-semibold flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+              Dilatación y Vólvulo Gástrico Severo
+            </span>
+<span class="font-label-sm text-label-sm text-secondary">6m de espera</span>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-secondary mt-0.5">
+<span>Llegada: 14:12 (hace 6m)</span>
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary font-bold rounded font-label-sm text-label-sm">Box Urgencias 1</span>
+</div>
+</div>
+</article>
+<!-- Patient 2: Milo (Emergency - Owner's pet) -->
+<article class="queue-item w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-2 relative overflow-hidden transition-all" data-priority="emergency">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary"></div>
+<div class="flex items-start justify-between pl-2">
+<div class="flex items-center gap-space-sm min-w-0">
+<img class="w-11 h-11 rounded-full object-cover shrink-0 shadow-sm" data-alt="Portrait of a friendly golden retriever dog sitting calm in clinic setting with soft studio light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY-l91ve6g3rjeMxex0_2ht37SMbjeEbOdlc7GJkfu5e4-r5B1Pf3j4L-Ib5PiKzzLmrfu5Yam1gY51USI-KNuXYcPyKyY9SsFgWyz4HWV3GxNIbFLwYQ8UDhXukeIhGNSs4a3qEnT12YUTQG3nYoGDL92ygrzNPO9xPFq7jGKOqAmY0IA8MxV-FTugHJTzobKQzrvHAt821uNe-snh3Ffkak7B8afLuu98HQR8JN_ZUV5wXW71HlR"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Milo</span>
+<span class="px-1.5 py-0.2 rounded bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-[10px] font-bold">TÚ</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Tutora: Sarah K.</span>
+</div>
+</div>
+<span class="shrink-0 px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm flex items-center gap-1">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+            EMERGENCIA
+          </span>
+</div>
+<div class="pl-2 bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm font-semibold flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[16px]">air</span>
+              Dificultad Respiratoria Aguda
+            </span>
+<span class="font-label-sm text-label-sm text-secondary">2m de espera</span>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-secondary mt-0.5">
+<span>Llegada: 14:18 (hace 2m)</span>
+<span class="px-2 py-0.5 bg-primary/10 text-primary font-bold rounded font-label-sm text-label-sm">Sala de Triaje B</span>
+</div>
+</div>
+</article>
+<!-- Patient 3: Luna (Urgent) -->
+<article class="queue-item w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-2 relative overflow-hidden transition-all" data-priority="urgent">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary-container"></div>
+<div class="flex items-start justify-between pl-2">
+<div class="flex items-center gap-space-sm min-w-0">
+<img class="w-11 h-11 rounded-full object-cover shrink-0 shadow-sm" data-alt="Expressive domestic shorthair cat with green eyes resting calmly on a vet padded table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCOvc43OjxpET-9lxxmws-53ck32ON2j0xx3a14aXoq2GzZuaRX1UbZNSLBK_sBSNMUA0P1OXEmyHLEnijAkBlj9NMtkSDrs_KUaSxVCW-1b8PepkaPozZjsKr7omAXdy2HlrQl9gxRDHtw5yZTHM5qRHZy0sWOR9I3RlY503KaQ_IqH6QgBDwY1K-4kvzUMVwE0rU0PDc0hTmitfAwIvkT4mucyE0MleVul9XqOxHtSoh11zyfijv"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Luna</span>
+<span class="font-label-sm text-label-sm text-secondary truncate">• Gato Común Europeo</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Tutora: Elena V.</span>
+</div>
+</div>
+<span class="shrink-0 px-2.5 py-1 rounded-full bg-surface-container-high text-on-secondary-container font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+            URGENCIA
+          </span>
+</div>
+<div class="pl-2 bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm font-semibold flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-secondary-container">report</span>
+              Ingestión de Cuerpo Extraño, Vómitos Persistentes
+            </span>
+<span class="font-label-sm text-label-sm text-secondary">22m de espera</span>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-secondary mt-0.5">
+<span>Llegada: 13:58 (hace 22m)</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-semibold rounded font-label-sm text-label-sm">Consulta 2</span>
+</div>
+</div>
+</article>
+<!-- Patient 4: Bella (Urgent) -->
+<article class="queue-item w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-2 relative overflow-hidden transition-all" data-priority="urgent">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary-container"></div>
+<div class="flex items-start justify-between pl-2">
+<div class="flex items-center gap-space-sm min-w-0">
+<img class="w-11 h-11 rounded-full object-cover shrink-0 shadow-sm" data-alt="French bulldog sitting obediently with head tilted in an examination room looking at veterinarian" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnd17KOW5FMtakFLWN876U3EXB6e0ibgsn28DaFAXEPdhFjWDyl86Qulv9YiXJHftorpZ8yL61HL15dxMr5ImuUc5xM2gGPjsShr8rCIn8RvbZ_wC2ukgUG0vQD34oEFzOuDN-4mreONuCjRs7bB-Vd4PSJEkX1IjcsYKjrP_FF6yWQHK2QOg3fCpnT8OX39UWJ96H-KxQlkJ3RuqxgAB6caC4orZCgTVNIkDbVXsL_DhWwgvRTytk"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Bella</span>
+<span class="font-label-sm text-label-sm text-secondary truncate">• Bulldog Francés</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Tutor: David L.</span>
+</div>
+</div>
+<span class="shrink-0 px-2.5 py-1 rounded-full bg-surface-container-high text-on-secondary-container font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+            URGENCIA
+          </span>
+</div>
+<div class="pl-2 bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm font-semibold flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-secondary-container">visibility</span>
+              Laceración Corneal (Ojo Izquierdo)
+            </span>
+<span class="font-label-sm text-label-sm text-secondary">35m de espera</span>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-secondary mt-0.5">
+<span>Llegada: 13:45 (hace 35m)</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-semibold rounded font-label-sm text-label-sm">Consulta 4</span>
+</div>
+</div>
+</article>
+<!-- Patient 5: Coco (Consultation) -->
+<article class="queue-item w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm flex flex-col gap-2 relative overflow-hidden transition-all" data-priority="consultation">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-container"></div>
+<div class="flex items-start justify-between pl-2">
+<div class="flex items-center gap-space-sm min-w-0">
+<img class="w-11 h-11 rounded-full object-cover shrink-0 shadow-sm" data-alt="Playful fluffy miniature poodle puppy sitting patiently on clinic examination floor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKTNFk45ysfuLcxKS2GCaK3JR2nEaa2Hh3UThDftbUGdwXLj8aXHsVLEs8DQk8pGTSPdyLJ72gz0sLB7TXvkkqCyKaG7AaruZo9DeQgLyPlST-4tjLUqkxvA89n4y3I8Ol5Vu8NDNPdhpvwxGZzRHqRRzjSjCBj4orbPWkPFfsrnjw3HdQ1nLu2HppV9a1X3oF1g6tqCD663v6SwwbgS5j2qZGt7vr7fz5qH4dUr528MhuuPoRdbfh"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Coco</span>
+<span class="font-label-sm text-label-sm text-secondary truncate">• Caniche Toy</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary truncate">Tutora: Jessica P.</span>
+</div>
+</div>
+<span class="shrink-0 px-2.5 py-1 rounded-full bg-primary-fixed/50 text-on-primary-fixed-variant font-label-sm text-label-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+            CONSULTA
+          </span>
+</div>
+<div class="pl-2 bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm font-semibold flex items-center gap-1 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">healing</span>
+              Vacunación de Rutina y Revisión Ótica
+            </span>
+<span class="font-label-sm text-label-sm text-secondary">50m de espera</span>
+</div>
+<div class="flex items-center justify-between font-body-sm text-body-sm text-secondary mt-0.5">
+<span>Llegada: 13:30</span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface font-semibold rounded font-label-sm text-label-sm">Sala Preventiva</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Triage Protocol Footer Advisory -->
+<div class="w-full bg-surface-container rounded-xl p-space-sm flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-secondary mt-0.5 shrink-0">info</span>
+<p class="font-body-sm text-body-sm text-secondary leading-snug">
+        Los pacientes son atendidos en estricto orden de gravedad clínica. La llegada de nuevas emergencias de alta severidad puede modificar la posición en la cola.
+      </p>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const filterButtons = document.querySelectorAll('.filter-tab');
+    const queueItems = document.querySelectorAll('.queue-item');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const refreshIcon = document.getElementById('refreshIcon');
+    const syncTimestamp = document.getElementById('syncTimestamp');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-primary', 'text-on-primary');
+          b.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+        });
+
+        btn.classList.add('bg-primary', 'text-on-primary');
+        btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+
+        queueItems.forEach(item => {
+          const priority = item.getAttribute('data-priority');
+          if (filter === 'all' || priority === filter) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        refreshIcon.classList.add('animate-spin');
+        setTimeout(() => {
+          refreshIcon.classList.remove('animate-spin');
+          if (syncTimestamp) {
+            syncTimestamp.textContent = 'Actualizado hace un momento';
+          }
+        }, 600);
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_16px_rgba(11,28,48,0.06)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-gutter-mobile"><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 text-on-surface-variant transition-colors" data-path="triage-assessment" href="#"><span class="material-symbols-outlined text-[24px]">pets</span><span class="font-label-sm text-label-sm mt-0.5">Triaje</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 transition-colors text-primary font-bold" data-path="active-queue" href="#"><span class="material-symbols-outlined text-[24px]">format_list_bulleted</span><span class="font-label-sm text-label-sm mt-0.5">Cola</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 text-on-surface-variant transition-colors" data-path="urgent-clinics" href="#"><span class="material-symbols-outlined text-[24px]">local_hospital</span><span class="font-label-sm text-label-sm mt-0.5">Clínicas</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 text-on-surface-variant transition-colors" data-path="pet-health-carnet" href="#"><span class="material-symbols-outlined text-[24px]">shield_with_heart</span><span class="font-label-sm text-label-sm mt-0.5">Salud Mascota</span></a></div></nav></body></html>

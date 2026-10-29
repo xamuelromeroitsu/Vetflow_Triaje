@@ -4,10 +4,10 @@
 | Capa | Tecnología | Nota |
 |---|---|---|
 | App móvil | Flutter | Android primero |
-| Autenticación | Firebase Auth | Email/contraseña; teléfono a evaluar |
-| Base de datos | Cloud Firestore | Persistencia offline activada |
-| Archivos | Firebase Storage | Fotos |
-| Lógica de triaje | Dart en la app (MVP) | Pasa a Cloud Functions si crece |
+| Autenticación | Supabase Auth | Email/contraseña; teléfono a evaluar |
+| Base de datos | Supabase Postgres | RLS; sincronización remota |
+| Archivos | Supabase Storage | Bucket privado para fotos |
+| Lógica de triaje | Dart en la app (MVP) | Evaluar Supabase Edge Functions si crece |
 | Portal web | Por decidir | Ver [preguntas pendientes](../07-gestion/preguntas-pendientes.md) |
 
 ## Estructura de código
@@ -15,24 +15,28 @@ Clean + Hexagonal + Vertical Slicing (detalle en
 [arquitectura-carpetas.md](arquitectura-carpetas.md)):
 
 ```
-app/lib/
+vetflow_triaje/lib/
 ├── app/            conexiones (arranque + inyección en app/di/)
 ├── shared/         kernel común de dominio (Result, errores)
 ├── features/       un slice vertical por dominio
 │   ├── auth/       domain/ (model, validation, port) + application/
 │   ├── triage/     (dominio del triaje, sin código aún)
 │   └── …
-└── infrastructure/ adaptadores: firebase/ (driven) y presentation/ (UI)
+└── infrastructure/ adaptadores: supabase/ (driven) y presentation/ (UI)
 ```
 
-Estado: solo `auth` implementado; `triage`, `pets` y `owners` tienen su
-carpeta documentada, a la espera de sus historias.
+Estado: auth, perfiles, dueños, mascotas, visitas, cola, clínicas y fotos tienen
+adaptadores Supabase. Las reglas clínicas siguen pendientes de validación
+veterinaria.
 
 ## Principios técnicos
 - El **motor de triaje no depende de la UI** y se prueba con pruebas unitarias.
 - Reglas en un archivo versionado (`rulesVersion`).
-- Toda escritura valida datos en el móvil **y** en reglas de Firestore.
-- Modo offline: persistencia local + reenvío automático.
+- Toda escritura valida datos en el móvil **y** en políticas RLS de Postgres y
+  Storage.
+- La persistencia offline y la sincronización diferida deben resolverse en una
+  capa local; Supabase no sustituye automáticamente la caché offline del
+  backend anterior.
 
 ## Abiertas
 Gestor de estado (Provider / Riverpod / Bloc) y navegación: decidir en el Paso 0 con un ADR.
