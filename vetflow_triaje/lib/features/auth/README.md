@@ -21,4 +21,7 @@ Los adaptadores Supabase viven en
 
 Para conectarlo al proyecto real, configurar `SUPABASE_URL` y
 `SUPABASE_ANON_KEY` en `.env`, habilitar Email en Supabase Auth y aplicar la
-migración SQL con sus políticas RLS.
+migración SQL con sus políticas RLS. Para iniciar sesión inmediatamente tras
+crear una cuenta, desactivar **Confirm email** en Supabase Dashboard, en
+Authentication → Sign In / Providers → Email. Con esta opción desactivada, la
+dirección de correo no se verifica durante el registro.

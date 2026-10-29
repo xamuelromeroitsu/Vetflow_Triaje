@@ -18,7 +18,9 @@ import 'package:vetflow_triaje/shared/presentation/theme/app_theme.dart';
 import 'package:vetflow_triaje/shared/presentation/widgets/shared_widgets.dart';
 
 class TriageResultScreen extends StatefulWidget {
-  const TriageResultScreen({super.key});
+  const TriageResultScreen({super.key, this.visitId});
+
+  final String? visitId;
 
   @override
   State<TriageResultScreen> createState() => _TriageResultScreenState();
@@ -36,10 +38,6 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
   late final UpdateVisit _updateVisit =
       appDependencies.visitModule.updateVisit;
 
-  String _getVisitId() {
-    return GoRouterState.of(context).uri.queryParameters['visitId'] ?? '';
-  }
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +45,7 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
   }
 
   Future<void> _loadAndEvaluate() async {
-    final visitId = _getVisitId();
+    final visitId = widget.visitId ?? '';
     if (visitId.isEmpty) {
       setState(() {
         _isLoading = false;
@@ -57,6 +55,8 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
     }
 
     final visitResult = await appDependencies.visitModule.visitRepository.findById(visitId);
+    if (!mounted) return;
+
     final visit = visitResult.valueOrNull;
     if (visit == null) {
       setState(() {
@@ -138,6 +138,7 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
       updatedAt: DateTime.now(),
     );
     await _updateVisit(updated);
+    if (!mounted) return;
 
     setState(() {
       _suggestedLevel = result.suggested;
@@ -290,7 +291,7 @@ class _TriageResultScreenState extends State<TriageResultScreen> {
                 PrimaryButton(
                   text: 'Confirmar con veterinario',
                   onPressed: () => context.go(
-                    '/triage/vet-confirmation?visitId=${_getVisitId()}',
+                    '/triage/vet-confirmation?visitId=${widget.visitId ?? ''}',
                   ),
                   icon: Icons.medical_information,
                 ),

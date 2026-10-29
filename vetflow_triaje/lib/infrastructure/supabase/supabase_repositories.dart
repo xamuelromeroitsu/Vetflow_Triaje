@@ -119,7 +119,8 @@ class SupabaseAuthRepository implements AuthRepository {
         return Result.failure(
           const DomainError(
             message:
-                'Cuenta creada. Confirma tu correo para poder iniciar sesión.',
+                'No se inició sesión después del registro. Desactiva '
+                '«Confirm email» en Supabase Auth para permitir acceso inmediato.',
           ),
         );
       }

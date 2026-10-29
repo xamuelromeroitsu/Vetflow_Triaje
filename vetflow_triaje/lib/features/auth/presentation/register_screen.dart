@@ -92,6 +92,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void _goBack() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/login');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: kTextPrimaryColor),
-          onPressed: () => context.pop(),
+          onPressed: _goBack,
         ),
         elevation: 0,
         backgroundColor: Colors.white,

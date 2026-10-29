@@ -28,10 +28,8 @@ import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/ficha_signos_vitales_s
 import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/cola_en_tiempo_real_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/red_flags_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/symptoms_screen.dart';
+import 'package:vetflow_triaje/features/triage/presentation/triage_result_screen.dart';
 import 'package:vetflow_triaje/features/triage/presentation/vet_confirmation_screen.dart';
-import 'package:vetflow_triaje/pantalla%20de%20mvp%200000/triage_evaluacion_screen.dart';
-import 'package:vetflow_triaje/features/triage/domain/model/triage_result.dart';
-import 'package:vetflow_triaje/features/triage/domain/model/triage_level.dart';
 
 /// Redirige según el estado de autenticación.
 ///
@@ -127,24 +125,8 @@ GoRouter createAppRouter({required bool Function() hasSession}) {
       ),
       GoRoute(
         path: '/triage/result',
-        builder: (context, state) {
-          final resultado = state.extra is TriageResult
-              ? state.extra! as TriageResult
-              : const TriageResult(
-                  suggested: TriageLevel.emergencia,
-                  reasons: [
-                    'Dificultad respiratoria aguda acompañada de letargo repentino y palidez elevada en encías. Compromiso de oxigenación detectado',
-                  ],
-                  rulesVersion: '1.0',
-                );
-          return TriageEvaluacionScreen(
-            resultado: resultado,
-            nombreMascota: 'Milo',
-            raza: 'Golden Retriever',
-            pesoKg: 28.4,
-            etiquetaEdad: '3 años',
-          );
-        },
+        builder: (context, state) =>
+            TriageResultScreen(visitId: state.uri.queryParameters['visitId']),
       ),
       GoRoute(
         path: '/triage/vet-confirmation',
