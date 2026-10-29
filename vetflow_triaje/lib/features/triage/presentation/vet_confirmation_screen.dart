@@ -121,7 +121,18 @@ class _VetConfirmationScreenState extends State<VetConfirmationScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              final visitId = _getVisitId();
+              context.go(
+                visitId.isEmpty
+                    ? '/triage/result'
+                    : '/triage/result?visitId=$visitId',
+              );
+            }
+          },
         ),
       ),
       body: SingleChildScrollView(

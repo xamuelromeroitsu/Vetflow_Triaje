@@ -241,7 +241,13 @@ class _RegistroMascotaScreenState extends State<RegistroMascotaScreen> {
       shadowColor: Colors.black.withOpacity(0.04),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: DogoColors.onSurfaceVariant),
-        onPressed: () => Navigator.of(context).maybePop(),
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/pets');
+          }
+        },
       ),
       title: Row(
         children: [
@@ -298,24 +304,6 @@ class _RegistroMascotaScreenState extends State<RegistroMascotaScreen> {
       padding: const EdgeInsets.symmetric(vertical: DogoSpacing.sm),
       child: Row(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: DogoColors.surfaceContainer,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Icon(Icons.arrow_back,
-                size: 20, color: DogoColors.onSurface),
-          ),
-          const SizedBox(width: DogoSpacing.sm),
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

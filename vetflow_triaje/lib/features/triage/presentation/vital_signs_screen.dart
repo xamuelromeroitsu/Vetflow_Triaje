@@ -110,7 +110,18 @@ class _VitalSignsScreenState extends State<VitalSignsScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              final visitId = _getVisitId();
+              context.go(
+                visitId.isEmpty
+                    ? '/triage/red-flags'
+                    : '/triage/red-flags?visitId=$visitId',
+              );
+            }
+          },
         ),
       ),
       body: SingleChildScrollView(

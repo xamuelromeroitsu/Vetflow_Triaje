@@ -166,7 +166,13 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/pets');
+            }
+          },
         ),
       ),
       body: Column(

@@ -550,6 +550,22 @@ Visit? _visitFromMap(Map<String, dynamic>? row) {
   );
 }
 
+Map<String, dynamic> _visitInsertMap(Visit visit) => {
+  if (visit.id.isNotEmpty) 'id': visit.id,
+  'pet_id': visit.petId,
+  if (visit.companyId != null) 'company_id': visit.companyId,
+  if (visit.redFlags != null) 'red_flags': visit.redFlags,
+  if (visit.symptoms != null) 'symptoms': visit.symptoms,
+  if (visit.vitals != null) 'vitals': visit.vitals,
+  if (visit.photos != null) 'photos': visit.photos,
+  if (visit.triage != null) 'triage': visit.triage,
+  if (visit.status != null) 'status': visit.status,
+  if (visit.createdAt != null)
+    'created_at': visit.createdAt!.toUtc().toIso8601String(),
+  if (visit.updatedAt != null)
+    'updated_at': visit.updatedAt!.toUtc().toIso8601String(),
+};
+
 class SupabaseVisitRepository implements VisitRepository {
   SupabaseVisitRepository({SupabaseClient? client}) : _client = client;
 
@@ -561,7 +577,7 @@ class SupabaseVisitRepository implements VisitRepository {
     try {
       final row = await client
           .from('visits')
-          .insert({'id': visit.id, ..._visitMap(visit)})
+          .insert(_visitInsertMap(visit))
           .select()
           .single();
       final saved = _visitFromMap(row);

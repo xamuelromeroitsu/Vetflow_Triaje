@@ -5,6 +5,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:vetflow_triaje/features/owners/application/use_case/get_owner_by_id.dart';
 import 'package:vetflow_triaje/features/pets/application/use_case/get_pets_by_owner.dart';
 import 'package:vetflow_triaje/features/pets/domain/model/pet.dart';
 import 'package:vetflow_triaje/features/triage/application/use_case/create_visit.dart';
@@ -24,7 +26,11 @@ class _PetListScreenState extends State<PetListScreen> {
   final List<Pet> _pets = [];
   bool _isLoading = false;
   String? _errorMessage;
+  String _greetingName = 'Usuario';
+  String? _startingPetId;
 
+  late final GetOwnerById _getOwnerById =
+      appDependencies.ownerModule.getOwnerById;
   late final GetPetsByOwner _getPetsByOwner =
       appDependencies.petModule.getPetsByOwner;
   late final CreateVisit _createVisit =
@@ -33,7 +39,41 @@ class _PetListScreenState extends State<PetListScreen> {
   @override
   void initState() {
     super.initState();
+    _loadGreetingName();
     _loadPets();
+  }
+
+  Future<void> _loadGreetingName() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    final metadata = user?.userMetadata;
+    final metadataName = _firstNonEmpty([
+      metadata?['full_name'],
+      metadata?['name'],
+    ]);
+
+    if (metadataName != null) {
+      if (mounted) setState(() => _greetingName = metadataName);
+      return;
+    }
+
+    if (user == null) return;
+
+    final result = await _getOwnerById(id: user.id);
+    if (!mounted) return;
+
+    final ownerName = result.valueOrNull?.name.trim();
+    if (ownerName != null && ownerName.isNotEmpty) {
+      setState(() => _greetingName = ownerName);
+    }
+  }
+
+  String? _firstNonEmpty(List<Object?> values) {
+    for (final value in values) {
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+    return null;
   }
 
   Future<void> _loadPets() async {
@@ -47,6 +87,8 @@ class _PetListScreenState extends State<PetListScreen> {
     });
 
     final result = await _getPetsByOwner(ownerId: ownerId);
+    if (!mounted) return;
+
     final pets = result.valueOrNull;
     if (pets != null) {
       setState(() {
@@ -61,6 +103,50 @@ class _PetListScreenState extends State<PetListScreen> {
     }
 
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  Future<void> _startTriage(Pet pet) async {
+    setState(() {
+      _errorMessage = null;
+      _startingPetId = pet.id;
+    });
+
+    try {
+      final result = await _createVisit(petId: pet.id);
+      if (!mounted) return;
+
+      final visit = result.valueOrNull;
+      if (visit == null || visit.id.isEmpty) {
+        final error = result.errorOrNull;
+        final detail = error != null && error.fields.isNotEmpty
+            ? error.fields.first.message
+            : null;
+        final message = error?.message ??
+            'No se pudo crear la visita para ${pet.name}';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(detail == null ? message : '$message: $detail'),
+          ),
+        );
+        return;
+      }
+
+      context.go(
+        Uri(
+          path: '/triage/symptoms',
+          queryParameters: {'visitId': visit.id},
+        ).toString(),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo iniciar el triaje: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _startingPetId = null);
+      }
+    }
   }
 
   @override
@@ -85,9 +171,9 @@ class _PetListScreenState extends State<PetListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Hola, Juan',
-                  style: TextStyle(
+                Text(
+                  'Hola, $_greetingName',
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
@@ -105,6 +191,14 @@ class _PetListScreenState extends State<PetListScreen> {
             ),
           ),
           const SizedBox(height: 20),
+          if (_errorMessage != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                _errorMessage!,
+                style: const TextStyle(color: kErrorColor),
+              ),
+            ),
 
           // Lista de mascotas
           Expanded(
@@ -149,29 +243,21 @@ class _PetListScreenState extends State<PetListScreen> {
                                 '${pet.species} • ${pet.breed} • ${pet.ageMonths} meses',
                                 style: const TextStyle(color: kTextSecondaryColor),
                               ),
-                              trailing: const Icon(
-                                Icons.chevron_right,
-                                color: kTextSecondaryColor,
-                              ),
-                          onTap: () async {
-                            final result = await _createVisit(
-                              petId: pet.id,
-                            );
-                            final visit = result.valueOrNull;
-                            if (visit != null && mounted) {
-                              context.go(
-                                '/triage/symptoms?visitId=${visit.id}',
-                              );
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'No se pudo iniciar el triaje',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                              trailing: _startingPetId == pet.id
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.chevron_right,
+                                      color: kTextSecondaryColor,
+                                    ),
+                              onTap: _startingPetId == null
+                                  ? () => _startTriage(pet)
+                                  : null,
                             ),
                           );
                         },

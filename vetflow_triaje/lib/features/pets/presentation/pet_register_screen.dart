@@ -141,7 +141,13 @@ class _PetRegisterScreenState extends State<PetRegisterScreen> {
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () => context.pop(),
+                          onPressed: () {
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go('/pets');
+                            }
+                          },
                           icon: const Icon(Icons.arrow_back, size: 28),
                           splashRadius: 20,
                         ),

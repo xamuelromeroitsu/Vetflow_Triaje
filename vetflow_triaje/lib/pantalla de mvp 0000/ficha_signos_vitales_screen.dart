@@ -218,7 +218,13 @@ class _FichaSignosVitalesScreenState extends State<FichaSignosVitalesScreen> {
       shadowColor: Colors.black.withOpacity(0.04),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: DogoColors.onSurface),
-        onPressed: () => Navigator.of(context).maybePop(),
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/pets/register');
+          }
+        },
       ),
       title: Row(
         children: [

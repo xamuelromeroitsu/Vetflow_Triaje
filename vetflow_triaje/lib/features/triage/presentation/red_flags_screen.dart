@@ -122,7 +122,18 @@ class _RedFlagsScreenState extends State<RedFlagsScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              final visitId = _getVisitId();
+              context.go(
+                visitId.isEmpty
+                    ? '/triage/symptoms'
+                    : '/triage/symptoms?visitId=$visitId',
+              );
+            }
+          },
         ),
       ),
       body: Column(
