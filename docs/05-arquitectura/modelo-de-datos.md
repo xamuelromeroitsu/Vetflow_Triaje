@@ -9,8 +9,10 @@ public.user_profiles             perfil ligado a auth.users
 public.clinics                   clínicas (EPC-06)
 ```
 
-El esquema implementado está en
-[`vetflow_triaje/supabase/migrations/20261027000000_initial_schema.sql`](../../vetflow_triaje/supabase/migrations/20261027000000_initial_schema.sql).
+El esquema implementado está dividido en migraciones ordenadas por nombre en
+[`vetflow_triaje/supabase/migrations/`](../../vetflow_triaje/supabase/migrations/),
+con un archivo por tabla y archivos separados para funciones, seguridad,
+Storage y Realtime.
 Postgres usa `snake_case`; los modelos Dart mantienen los nombres del dominio.
 
 ## owners

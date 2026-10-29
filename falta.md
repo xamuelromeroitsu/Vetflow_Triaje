@@ -10,8 +10,8 @@ remoto esté listo ni que todas las historias de producto estén terminadas.
   validada antes de arrancar la app.
 - Adaptadores de Supabase para Auth (registro, inicio y cierre de sesión),
   perfiles, dueños, mascotas, visitas, cola, clínicas y fotos.
-- Esquema PostgreSQL inicial con constraints, RLS, Storage privado y Realtime en
-  `vetflow_triaje/supabase/migrations/20261027000000_initial_schema.sql`.
+- Esquema PostgreSQL inicial dividido en migraciones con constraints, RLS,
+  Storage privado y Realtime en `vetflow_triaje/supabase/migrations/`.
 - Dependencias y configuración FlutterFire retiradas del proyecto móvil.
 - Validación local: `flutter clean`, `flutter pub get`, 22 pruebas y compilación
   APK Android debug completadas.
@@ -21,8 +21,9 @@ remoto esté listo ni que todas las historias de producto estén terminadas.
 1. **Clave del proyecto:** sustituir el marcador de posición de
    `vetflow_triaje/.env` por la clave pública `anon`/`publishable`. No usar
    `service_role`. La clave real no está disponible en este entorno.
-2. **Despliegue del esquema:** revisar y aplicar la migración SQL al proyecto
-   Supabase `mpcpojywownddppkcyzr`. No se hicieron cambios en la base remota.
+2. **Despliegue del esquema:** revisar y aplicar todas las migraciones SQL en
+   orden al proyecto Supabase `mpcpojywownddppkcyzr`. No se hicieron cambios
+   en la base remota.
 3. **Prueba real de Auth y datos:** comprobar proveedor Email, registro,
    confirmación de correo, inicio/cierre de sesión, políticas RLS y Storage en
    un dispositivo después de configurar la clave y desplegar el esquema.
