@@ -27,5 +27,12 @@
 - Tamaño de toque mínimo 48 px.
 - Textos escalables con el tamaño de fuente del sistema.
 
+## Diseño responsivo
+- En móvil, el contenido ocupa el ancho disponible y conserva márgenes laterales.
+- En ventanas amplias, la app se centra y limita su ancho a 600 px para evitar
+  formularios y acciones excesivamente extendidos.
+- Los botones mantienen una altura mínima de 48 px y no superan el ancho del
+  contenido de su pantalla.
+
 ## Componentes del MVP
 `TriageBadge` · `PetCard` · `SymptomChip` · `VitalInput` · `PhotoPicker` · `QueueItem` · `PrimaryButton`

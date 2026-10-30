@@ -12,15 +12,37 @@ import 'package:vetflow_triaje/app/router/app_router.dart';
 
 void main() {
   testWidgets('smoke test renders app shell', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     final router = createAppRouter(hasSession: () => false);
     addTearDown(router.dispose);
 
     await tester.pumpWidget(VetFlowApp(router: router));
 
     expect(find.byType(MaterialApp), findsOneWidget);
+    expect(tester.getSize(find.byType(Scaffold)).width, 600);
     expect(
       find.text('Atención médica y triaje rápido para tu mascota'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('app frame keeps the full width on mobile', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final router = createAppRouter(hasSession: () => false);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(VetFlowApp(router: router));
+
+    expect(tester.getSize(find.byType(Scaffold)).width, 390);
   });
 }
